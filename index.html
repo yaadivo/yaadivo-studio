@@ -58,6 +58,7 @@
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 0px;
         }
         ::-webkit-scrollbar-track {
             background: #F8F1E9;
@@ -65,6 +66,16 @@
         ::-webkit-scrollbar-thumb {
             background: #5D0703;
             border-radius: 4px;
+        }
+        /* Completely hide scrollbars on pills, drawers & horizontal scroll sections */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
         }
     </style>
 </head>
@@ -97,7 +108,11 @@
             <div class="flex items-center gap-3">
                 <!-- Mobile Hamburger Button -->
                 <button onclick="toggleMobileNavDrawer()" class="lg:hidden p-2.5 rounded-xl bg-vanilla-soft hover:bg-vanilla text-cherry transition border border-vanilla-dark/40" title="Open Menu">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" x2="20" y1="12" y2="12"/>
+                        <line x1="4" x2="20" y1="6" y2="6"/>
+                        <line x1="4" x2="20" y1="18" y2="18"/>
+                    </svg>
                 </button>
 
                 <!-- Brand Logo -->
@@ -108,7 +123,10 @@
 
             <!-- Search Bar (Live Product Filter) -->
             <div class="hidden md:flex items-center relative flex-1 max-w-xs lg:max-w-sm">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.3-4.3"/>
+                </svg>
                 <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search frames, resin, mugs, photobooks..." class="w-full bg-slate-100/90 hover:bg-slate-100 rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-cherry focus:bg-white border border-slate-200 transition">
             </div>
 
@@ -154,13 +172,21 @@
             <!-- Right Actions: Wishlist, Track, Studio Admin, Account / OTP, Cart -->
             <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
                 <!-- Track Order Button (Header shortcut) -->
-                <button onclick="openTrackModal()" title="Track Your Order" class="p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
-                    <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                <button onclick="openTrackModal()" title="Track Your Order" class="p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40 flex items-center justify-center">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                        <path d="M15 18H9"/>
+                        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+                        <circle cx="17" cy="18.5" r="2.5"/>
+                        <circle cx="7" cy="18.5" r="2.5"/>
+                    </svg>
                 </button>
 
                 <!-- Wishlist Button -->
-                <button onclick="openWishlistDrawer()" title="Wishlist" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
-                    <i data-lucide="heart" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                <button onclick="openWishlistDrawer()" title="Wishlist" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40 flex items-center justify-center">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
                     <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
                 </button>
 
@@ -172,14 +198,22 @@
 
                 <!-- Customer Account / OTP Login Button -->
                 <button id="auth-btn" onclick="handleAuthButtonClick()" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
-                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <polyline points="16 11 18 13 22 9"/>
+                    </svg>
                     <span id="auth-btn-text" class="hidden sm:inline">Login with OTP</span>
                     <span class="sm:hidden font-bold">Login</span>
                 </button>
 
                 <!-- Cart Button -->
-                <button onclick="openCartDrawer()" title="Shopping Cart" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
-                    <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                <button onclick="openCartDrawer()" title="Shopping Cart" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40 flex items-center justify-center">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-2Z"/>
+                        <path d="M3 6h18"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
                     <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-cherry text-vanilla text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
                 </button>
             </div>
@@ -188,7 +222,10 @@
         <!-- Mobile Search Bar (Visible on mobile only) -->
         <div class="block md:hidden px-4 pb-3">
             <div class="relative">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5 pointer-events-none"></i>
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.3-4.3"/>
+                </svg>
                 <input type="text" oninput="handleGlobalSearch(this.value)" placeholder="Search frames, resin, photobooks, mugs..." class="w-full bg-slate-100 rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-cherry focus:bg-white border border-slate-200">
             </div>
         </div>
