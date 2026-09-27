@@ -132,41 +132,13 @@
 
             <!-- Navigation Links & Categories (Desktop lg & xl) -->
             <div class="hidden lg:flex items-center gap-5 text-sm font-bold text-slate-700">
-                <!-- Occasions Dropdown Trigger -->
-                <div class="relative group py-2">
-                    <button class="flex items-center gap-1 hover:text-cherry transition">
-                        <span>Occasions</span>
-                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cherry transition"></i>
-                    </button>
-                    <div class="absolute top-full left-0 hidden group-hover:block bg-white rounded-2xl shadow-xl border border-slate-200 p-2 min-w-[180px] z-50 animate-in fade-in slide-in-from-top-1">
-                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Anniversary')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💍 Anniversary Gifts</a>
-                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Birthday')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">🎂 Birthday Specials</a>
-                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Wedding')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💒 Wedding Keepsakes</a>
-                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Valentine')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">❤️ Valentine & Couples</a>
-                    </div>
-                </div>
-
-                <!-- Recipient Dropdown Trigger -->
-                <div class="relative group py-2">
-                    <button class="flex items-center gap-1 hover:text-cherry transition">
-                        <span>Shop By</span>
-                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cherry transition"></i>
-                    </button>
-                    <div class="absolute top-full left-0 hidden group-hover:block bg-white rounded-2xl shadow-xl border border-slate-200 p-2 min-w-[170px] z-50 animate-in fade-in slide-in-from-top-1">
-                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Him')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">👔 Gifts for Him</a>
-                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Her')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">👗 Gifts for Her</a>
-                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Couple')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💑 For Couples</a>
-                    </div>
-                </div>
-
-                <a href="#frames" class="hover:text-cherry transition">Frames</a>
+                <a href="#frames" class="hover:text-cherry transition">🖼️ Photo Frames</a>
+                <a href="#custom-gifts" class="hover:text-cherry transition">☕ Mugs & Pillows</a>
                 <a href="#resin" class="hover:text-cherry transition flex items-center gap-1">
                     <span>Jaimala Resin</span>
                     <span class="bg-cherry text-vanilla text-[10px] px-1.5 py-0.5 rounded-full font-bold">Special</span>
                 </a>
-                <a href="#photobooks" class="hover:text-cherry transition">Photobooks</a>
-                <a href="#custom-gifts" class="hover:text-cherry transition">Mugs & Pillows</a>
-                <a href="#wall-art" class="hover:text-cherry transition">Wall Art</a>
+                <a href="#photobooks" class="hover:text-cherry transition">📖 Photobooks</a>
             </div>
 
             <!-- Right Actions: Wishlist, Track, Studio Admin, Account / OTP, Cart -->
@@ -247,39 +219,20 @@
                     <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Categories</p>
                     <a href="#frames" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
                         <i data-lucide="image" class="w-4 h-4 text-cherry"></i>
-                        <span>Photo Frames (All Sizes)</span>
-                    </a>
-                    <a href="#resin" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
-                        <span>Jaimala Resin Preservation</span>
-                    </a>
-                    <a href="#photobooks" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
-                        <i data-lucide="book-open" class="w-4 h-4 text-cherry"></i>
-                        <span>Layflat Photobooks</span>
+                        <span>Photo Frames</span>
                     </a>
                     <a href="#custom-gifts" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
                         <i data-lucide="coffee" class="w-4 h-4 text-cherry"></i>
                         <span>Mugs & Pillows</span>
                     </a>
-                    <a href="#wall-art" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
-                        <i data-lucide="palette" class="w-4 h-4 text-cherry"></i>
-                        <span>Wall Art & Canvas</span>
+                    <a href="#resin" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                        <span>Jaimala Resin <span class="bg-cherry text-vanilla text-[10px] px-1.5 py-0.5 rounded-full font-bold ml-1">Special</span></span>
                     </a>
-
-                    <div class="pt-4 border-t border-slate-100">
-                        <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Occasions</p>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Anniversary');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💍 Anniversary Gifts</button>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Birthday');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">🎂 Birthday Specials</button>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Wedding');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💒 Wedding Keepsakes</button>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Valentine');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">❤️ Valentine & Couples</button>
-                    </div>
-
-                    <div class="pt-3 border-t border-slate-100">
-                        <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Shop For</p>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Him');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">👔 Gifts for Him</button>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Her');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">👗 Gifts for Her</button>
-                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Couple');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💑 For Couples</button>
-                    </div>
+                    <a href="#photobooks" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="book-open" class="w-4 h-4 text-cherry"></i>
+                        <span>Photobooks</span>
+                    </a>
                 </div>
             </div>
 
