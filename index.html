@@ -1221,15 +1221,23 @@
     <!-- ============================================================== -->
     <!--            MODAL 1: OTP AUTHENTICATION SIMULATOR               -->
     <!-- ============================================================== -->
-    <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div id="auth-modal" onclick="if(event.target===this) closeAuthModal();" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-vanilla relative">
-            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800">
-                <i data-lucide="x" class="w-5 h-5"></i>
+            <!-- Cut / Close (X) Button -->
+            <button onclick="closeAuthModal()" type="button" aria-label="Close" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center transition shadow-xs border border-slate-200 z-20 cursor-pointer">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </button>
 
             <!-- Brand Icon -->
             <div class="w-12 h-12 rounded-2xl bg-cherry/10 text-cherry flex items-center justify-center mb-4">
-                <i data-lucide="key-round" class="w-6 h-6"></i>
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="7.5" cy="15.5" r="5.5"/>
+                    <path d="m21 2-9.6 9.6"/>
+                    <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+                </svg>
             </div>
 
             <h3 class="text-2xl font-serif font-black text-slate-900" id="auth-modal-title">Verify with Email OTP</h3>
@@ -3643,7 +3651,9 @@
         }
 
         function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
+            const m = document.getElementById('auth-modal');
+            if (m) m.classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         async function sendOtpSimulator() {
