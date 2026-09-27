@@ -197,7 +197,7 @@
                 </button>
 
                 <!-- Customer Account / OTP Login Button -->
-                <button id="auth-btn" onclick="handleAuthButtonClick()" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
+                <button id="auth-btn" onclick="try{ handleAuthButtonClick() }catch(e){ var m=document.getElementById('auth-modal'); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                         <circle cx="9" cy="7" r="4"/>
