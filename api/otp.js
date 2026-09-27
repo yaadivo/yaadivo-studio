@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const ADMIN_EMAIL = "yaadivo@gmail.com";
+const ADMIN_EMAILS = ["yaadivo@gmail.com", "ayushadarsh676@gmail.com"];
 const SERVER_SECRET = "z4vItw5SnbYJ9xvRV2MNyaufDRg_YAADIVO_MASTER_2026";
 
 function signPayload(payloadObj) {
@@ -141,7 +141,7 @@ export default async function handler(req, res) {
         }
 
         if (decoded.otp === otp.trim()) {
-          const isAdmin = decoded.email.toLowerCase() === ADMIN_EMAIL;
+          const isAdmin = ADMIN_EMAILS.includes(decoded.email.toLowerCase().trim());
           const adminToken = isAdmin ? signPayload({
             email: decoded.email.toLowerCase(),
             role: "ADMIN_OWNER",

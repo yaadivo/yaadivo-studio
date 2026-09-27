@@ -2063,9 +2063,11 @@
             }
         }
 
-        // Secure Admin Studio Dashboard Functions (Only accessible with yaadivo@gmail.com OTP Token)
+        const SUPER_ADMINS = ["yaadivo@gmail.com", "ayushadarsh676@gmail.com"];
+
+        // Secure Admin Studio Dashboard Functions (Accessible by Super Admins)
         function openAdminModal() {
-            if (!currentAdminToken || !currentUser || currentUser.toLowerCase() !== "yaadivo@gmail.com") {
+            if (!currentAdminToken || !currentUser || !SUPER_ADMINS.includes(currentUser.toLowerCase().trim())) {
                 openAuthModal();
                 return;
             }
@@ -2748,7 +2750,7 @@
                     currentAdminToken = u.adminToken || null;
                     document.getElementById('auth-btn-text').innerText = `👤 ${currentUser.split('@')[0]} (Logout)`;
                     document.getElementById('auth-btn').className = "flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 transition shadow-md";
-                    if (u.isAdmin && currentAdminToken && currentUser.toLowerCase() === "yaadivo@gmail.com") {
+                    if (u.isAdmin && currentAdminToken && SUPER_ADMINS.includes(currentUser.toLowerCase().trim())) {
                         const adminBtn = document.getElementById('admin-nav-btn');
                         adminBtn.classList.remove('hidden');
                         adminBtn.classList.add('flex');

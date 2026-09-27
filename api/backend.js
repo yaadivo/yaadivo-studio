@@ -112,6 +112,8 @@ async function writeCloudinaryDb(name, dataObj) {
 
 const SERVER_SECRET = "z4vItw5SnbYJ9xvRV2MNyaufDRg_YAADIVO_MASTER_2026";
 
+const ADMIN_EMAILS = ["yaadivo@gmail.com", "ayushadarsh676@gmail.com"];
+
 function verifyAdminToken(tokenStr) {
   try {
     if (!tokenStr || !tokenStr.includes('.')) return false;
@@ -119,7 +121,7 @@ function verifyAdminToken(tokenStr) {
     const expectedSig = crypto.createHmac('sha256', SERVER_SECRET).update(data).digest('base64url');
     if (sig !== expectedSig) return false;
     const payload = JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
-    return payload && payload.email === "yaadivo@gmail.com" && payload.role === "ADMIN_OWNER" && Date.now() < payload.exp;
+    return payload && ADMIN_EMAILS.includes((payload.email || '').toLowerCase().trim()) && payload.role === "ADMIN_OWNER" && Date.now() < payload.exp;
   } catch (e) {
     return false;
   }
