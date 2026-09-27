@@ -1334,7 +1334,7 @@
                     <input type="text" id="otp-input" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-widest text-xl font-black rounded-xl border border-slate-300 px-3 py-2.5 focus:outline-none focus:border-cherry">
                 </div>
 
-                <button onclick="verifyOtpSimulator()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
+                <button id="verify-otp-submit-btn" onclick="verifyOtpSimulator()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
                     Verify & Login Now
                 </button>
 
@@ -3745,9 +3745,11 @@
                 return;
             }
 
-            const verifyBtn = document.querySelector('#auth-step-2 button');
-            verifyBtn.innerText = "Verifying...";
-            verifyBtn.disabled = true;
+            const verifyBtn = document.getElementById('verify-otp-submit-btn') || document.querySelector('#auth-step-2 button');
+            if (verifyBtn) {
+                verifyBtn.innerText = "Verifying...";
+                verifyBtn.disabled = true;
+            }
 
             try {
                 const res = await fetch(`/api/otp?action=verify_otp&token=${encodeURIComponent(currentAuthToken)}&otp=${otp}`);
