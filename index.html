@@ -1308,7 +1308,7 @@
                     </div>
                 </div>
 
-                <button onclick="sendOtpSimulator()" class="w-full py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                <button id="send-otp-btn" onclick="if(typeof sendOtpSimulator==='function'){sendOtpSimulator();}else{(async()=>{var e=document.getElementById('auth-input').value.trim();if(!e||!e.includes('@')){alert('Sahi email dalein!');return;}var b=document.getElementById('send-otp-btn');b.disabled=true;b.innerHTML='<span>Sending...</span>';try{var r=await fetch('/api/otp?action=send_otp&email='+encodeURIComponent(e));var d=await r.json();if(d.status==='Success'){window.currentAuthToken=d.token;document.getElementById('auth-step-1').classList.add('hidden');document.getElementById('auth-step-2').classList.remove('hidden');var s=document.getElementById('otp-status-msg');if(s)s.innerText='Code sent to '+e+'!';}else{alert('Error: '+(d.message||'Failed'));}}catch(err){alert('Error: '+err.message);}finally{b.disabled=false;b.innerHTML='<span>Send Verification Code</span>';}})();}" class="w-full py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
                     <span>Send Verification Code</span>
                     <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
@@ -1334,7 +1334,7 @@
                     <input type="text" id="otp-input" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-widest text-xl font-black rounded-xl border border-slate-300 px-3 py-2.5 focus:outline-none focus:border-cherry">
                 </div>
 
-                <button id="verify-otp-submit-btn" onclick="verifyOtpSimulator()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
+                <button id="verify-otp-submit-btn" onclick="if(typeof verifyOtpSimulator==='function'){verifyOtpSimulator();}else{(async()=>{var otp=document.getElementById('otp-input').value.trim();var tok=window.currentAuthToken;if(!otp||!tok){alert('OTP enter karein!');return;}var b=document.getElementById('verify-otp-submit-btn');b.disabled=true;b.innerText='Verifying...';try{var r=await fetch('/api/otp?action=verify_otp&token='+encodeURIComponent(tok)+'&otp='+encodeURIComponent(otp));var d=await r.json();if(d.status==='Success'){localStorage.setItem('yaadivo_user',JSON.stringify({email:d.email,isAdmin:d.isAdmin,adminToken:d.adminToken||null}));alert('Welcome! '+d.email);document.getElementById('auth-modal').classList.add('hidden');location.reload();}else{alert('Error: '+(d.message||'Wrong OTP'));}}catch(err){alert('Error: '+err.message);}finally{b.disabled=false;b.innerText='Verify & Login Now';}})();}" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
                     Verify & Login Now
                 </button>
 
@@ -3630,7 +3630,7 @@
             } catch(e) {
                 container.innerHTML = `<p class="text-center text-xs text-rose-600 py-4">Error loading orders.</p>`;
             }
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') { try { lucide.createIcons(); } catch(e) {} }
         }
 
         // Real Branded Email OTP Engine + Firebase Customer Sync
