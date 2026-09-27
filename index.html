@@ -1321,17 +1321,28 @@
                         <i data-lucide="mail-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                         <span id="otp-status-msg">Verification code sent to your email inbox!</span>
                     </div>
-                    <span id="otp-timer" class="text-[10px] text-slate-400 font-bold">Resend in 30s</span>
+                    <button type="button" id="otp-timer-btn" onclick="resendOtpCode()" disabled class="text-[10px] text-slate-400 font-bold transition">Resend in 30s</button>
+                </div>
+
+                <div class="text-[11px] text-slate-500 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/60 flex items-start gap-2">
+                    <span class="text-amber-600 font-bold">ℹ️ Tip:</span>
+                    <span>Agar Inbox me email na dikhe toh kripya <b>Spam / Promotions</b> folder zaroor check karein.</span>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Enter 6-Digit Code</label>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Enter 6-Digit Email Code</label>
                     <input type="text" id="otp-input" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-widest text-xl font-black rounded-xl border border-slate-300 px-3 py-2.5 focus:outline-none focus:border-cherry">
                 </div>
 
                 <button onclick="verifyOtpSimulator()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
                     Verify & Login Now
                 </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" onclick="document.getElementById('auth-step-2').classList.add('hidden'); document.getElementById('auth-step-1').classList.remove('hidden');" class="text-xs text-cherry font-bold hover:underline">
+                        ← Change Email Address
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -3655,14 +3666,24 @@
                     document.getElementById('otp-status-msg').innerText = `Code sent to ${input}!`;
 
                     otpCountdown = 30;
-                    const timerSpan = document.getElementById('otp-timer');
+                    const timerBtn = document.getElementById('otp-timer-btn');
+                    if (timerBtn) {
+                        timerBtn.disabled = true;
+                        timerBtn.className = "text-[10px] text-slate-400 font-bold transition";
+                        timerBtn.innerText = `Resend in ${otpCountdown}s`;
+                    }
                     if (otpTimerInterval) clearInterval(otpTimerInterval);
                     otpTimerInterval = setInterval(() => {
                         otpCountdown--;
-                        if (timerSpan) timerSpan.innerText = `Resend in ${otpCountdown}s`;
-                        if (otpCountdown <= 0) {
-                            clearInterval(otpTimerInterval);
-                            if (timerSpan) timerSpan.innerText = "Resend Code";
+                        if (timerBtn) {
+                            if (otpCountdown > 0) {
+                                timerBtn.innerText = `Resend in ${otpCountdown}s`;
+                            } else {
+                                clearInterval(otpTimerInterval);
+                                timerBtn.disabled = false;
+                                timerBtn.className = "text-[10px] text-cherry font-black hover:underline cursor-pointer transition";
+                                timerBtn.innerText = "Resend Code";
+                            }
                         }
                     }, 1000);
                 } else {
@@ -3674,6 +3695,44 @@
             } finally {
                 sendBtn.innerHTML = originalText;
                 sendBtn.disabled = false;
+            }
+        }
+
+        async function resendOtpCode() {
+            const timerBtn = document.getElementById('otp-timer-btn');
+            if (timerBtn) {
+                timerBtn.disabled = true;
+                timerBtn.innerText = "Sending...";
+            }
+            const input = document.getElementById('auth-input').value.trim();
+            try {
+                const res = await fetch(`/api/otp?action=send_otp&email=${encodeURIComponent(input)}`);
+                const data = await res.json();
+                if (data.status === "Success") {
+                    currentAuthToken = data.token;
+                    document.getElementById('otp-status-msg').innerText = `New code sent to ${input}!`;
+                    otpCountdown = 30;
+                    if (otpTimerInterval) clearInterval(otpTimerInterval);
+                    otpTimerInterval = setInterval(() => {
+                        otpCountdown--;
+                        if (timerBtn) {
+                            if (otpCountdown > 0) {
+                                timerBtn.innerText = `Resend in ${otpCountdown}s`;
+                            } else {
+                                clearInterval(otpTimerInterval);
+                                timerBtn.disabled = false;
+                                timerBtn.className = "text-[10px] text-cherry font-black hover:underline cursor-pointer transition";
+                                timerBtn.innerText = "Resend Code";
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    alert(data.message || "Failed to resend code");
+                    if (timerBtn) timerBtn.disabled = false;
+                }
+            } catch (err) {
+                alert("Resend failed: " + err.message);
+                if (timerBtn) timerBtn.disabled = false;
             }
         }
 
