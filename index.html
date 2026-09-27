@@ -203,17 +203,31 @@
                         <i data-lucide="palette" class="w-4 h-4 text-cherry"></i>
                         <span>Wall Art & Canvas</span>
                     </a>
+                <!-- Quick Actions: Account & Wishlist -->
+                <div class="py-3 px-1 border-t border-slate-100 grid grid-cols-2 gap-2">
+                    <button onclick="toggleMobileNavDrawer(); try{ handleAuthButtonClick(); }catch(e){ openAuthModal(); }" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-cherry text-vanilla font-bold text-xs">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>My Account</span>
+                    </button>
+                    <button onclick="toggleMobileNavDrawer(); openWishlistDrawer();" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-vanilla text-cherry font-bold text-xs border border-cherry/20">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                        <span>Wishlist</span>
+                    </button>
                 </div>
             </div>
 
             <div class="pt-4 border-t border-slate-100 space-y-2">
-                <button onclick="toggleMobileNavDrawer(); openTrackModal();" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-vanilla text-cherry font-bold text-xs uppercase tracking-wider shadow-xs">
+                <button onclick="toggleMobileNavDrawer(); openTrackModal();" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-vanilla-soft hover:bg-vanilla text-cherry font-bold text-xs uppercase tracking-wider border border-vanilla-dark/50">
                     <i data-lucide="truck" class="w-4 h-4"></i>
                     <span>Track Your Order</span>
                 </button>
-                <a href="https://api.whatsapp.com/send?phone=919235843640&text=Hi%20Yaadivo,%20I%20have%20an%20inquiry%20regarding%20custom%20gifts" target="_blank" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider shadow-xs">
+                <a href="https://api.whatsapp.com/send?phone=919235843640&text=Hi%20Yaadivo,%20I%20have%20an%20inquiry%20regarding%20custom%20gifts" target="_blank" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-xs">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
                     <span>WhatsApp Support</span>
+                </a>
+                <a href="tel:+919235843640" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-slate-600 hover:text-cherry font-bold text-xs">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-cherry"></i>
+                    <span>Helpline: +91 9235843640</span>
                 </a>
             </div>
         </div>
