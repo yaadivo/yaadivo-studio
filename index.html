@@ -350,17 +350,226 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-vanilla-dark/50">
             <div>
                 <span class="text-xs font-black uppercase tracking-widest text-cherry">Premium Wooden & Glass Framing</span>
-                <h2 class="text-3xl sm:text-4xl font-serif font-black text-slate-900 mt-1">Custom Photo Frames (All Sizes)</h2>
-                <p class="text-sm text-slate-500 mt-1">Available in Matte Black, Royal Teakwood & Modern White Borders.</p>
+                <h2 class="text-3xl sm:text-4xl font-serif font-black text-slate-900 mt-1">Custom Photo Frames</h2>
+                <p class="text-sm text-slate-500 mt-1">Available in Matte Black, Royal Teakwood & Modern White Borders. Your photo, our craft.</p>
             </div>
-            <div class="mt-4 md:mt-0 flex gap-2">
-                <span class="text-xs bg-vanilla text-cherry font-bold px-3 py-1.5 rounded-full border border-cherry/20">4×6 to 20×30 Inches</span>
+            <div class="mt-4 md:mt-0 flex gap-2 flex-wrap">
+                <span class="text-xs bg-cherry text-vanilla font-bold px-3 py-1.5 rounded-full">7 Sizes Available</span>
+                <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-3 py-1.5 rounded-full">🚚 Free Delivery ₹499+</span>
             </div>
         </div>
 
-        <!-- Frame Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="frames-grid">
-            <!-- Dynamically populated via JavaScript -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="frames-grid">
+
+            <!-- 4x6 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=800&q=80" alt="4x6 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-cherry text-vanilla text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">Best Seller</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Upload your favourite memory</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">4 × 6 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">Tabletop</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Classic Mini Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Perfect for desk & shelves. Teakwood finish with anti-glare glass.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹499</span>
+                            <span class="block text-xl font-black text-cherry">₹299 <span class="text-xs font-bold text-emerald-600">40% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('4×6 Custom Photo Frame', 299, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5x7 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="5x7 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">Popular</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Add names, date & message</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">5 × 7 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">Tabletop</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Standard Portrait Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Ideal for couple & family portraits. Matte black or white finish.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹699</span>
+                            <span class="block text-xl font-black text-cherry">₹449 <span class="text-xs font-bold text-emerald-600">36% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('5×7 Custom Photo Frame', 449, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8x10 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="8x10 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Personalise with custom text</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">8 × 10 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">Wall / Tabletop</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Classic Wall Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Premium teakwood with UV-protected glass. Perfect wall display.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹1,199</span>
+                            <span class="block text-xl font-black text-cherry">₹799 <span class="text-xs font-bold text-emerald-600">33% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('8×10 Custom Photo Frame', 799, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8x12 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80" alt="8x12 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-cherry text-vanilla text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">Wedding Fav</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Perfect wedding keepsake</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">8 × 12 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">Wall Frame</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Premium Wedding Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Wide frame, perfect for wedding & anniversary photographs.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹1,499</span>
+                            <span class="block text-xl font-black text-cherry">₹999 <span class="text-xs font-bold text-emerald-600">33% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('8×12 Custom Photo Frame', 999, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 12x18 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80" alt="12x18 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-slate-800 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">Large Size</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Statement wall decor piece</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">12 × 18 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">Large Wall</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Statement Gallery Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Bold & beautiful. Makes a stunning centrepiece for any room.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹2,299</span>
+                            <span class="block text-xl font-black text-cherry">₹1,499 <span class="text-xs font-bold text-emerald-600">35% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('12×18 Custom Photo Frame', 1499, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 16x24 -->
+            <div class="bg-white rounded-3xl border border-vanilla-dark/40 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1537907690979-f9c31dc0b59c?auto=format&fit=crop&w=800&q=80" alt="16x24 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-cherry text-vanilla text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">XL Frame</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">Living room showpiece</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-vanilla text-cherry text-xs font-black px-2 py-0.5 rounded-lg">16 × 24 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">XL Wall</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">XL Luxury Wall Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Museum-quality printing. Royal teakwood frame, gallery-grade glass.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹3,499</span>
+                            <span class="block text-xl font-black text-cherry">₹2,199 <span class="text-xs font-bold text-emerald-600">37% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('16×24 Custom Photo Frame', 2199, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 20x30 -->
+            <div class="bg-white rounded-3xl border-2 border-cherry/30 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col group overflow-hidden">
+                <div class="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80" alt="20x30 Frame" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase shadow">Mega XXL</span>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 text-center">
+                            <p class="text-white text-[11px] font-black tracking-wide">✏️ DESIGN YOUR PHOTOFRAME</p>
+                            <p class="text-white/70 text-[9px] mt-0.5">The ultimate grand display</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="bg-cherry text-vanilla text-xs font-black px-2 py-0.5 rounded-lg">20 × 30 Inch</span>
+                        <span class="text-[10px] text-slate-400 font-bold">XXL Grand</span>
+                    </div>
+                    <h3 class="font-serif font-black text-base text-slate-900 mt-1">Grand Signature Frame</h3>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">The grandest statement piece. Premium print on thick archival paper.</p>
+                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹5,499</span>
+                            <span class="block text-xl font-black text-cherry">₹3,499 <span class="text-xs font-bold text-emerald-600">36% OFF</span></span>
+                        </div>
+                        <button onclick="openOrderModal('20×30 Custom Photo Frame', 3499, 'frame')" class="px-3 py-2 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wide transition shadow-sm">Order</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
