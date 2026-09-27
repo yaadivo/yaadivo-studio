@@ -1334,7 +1334,7 @@
                     <input type="text" id="otp-input" maxlength="6" placeholder="• • • • • •" class="w-full text-center tracking-widest text-xl font-black rounded-xl border border-slate-300 px-3 py-2.5 focus:outline-none focus:border-cherry">
                 </div>
 
-                <button id="verify-otp-submit-btn" onclick="if(typeof verifyOtpSimulator==='function'){verifyOtpSimulator();}else{(async()=>{var otp=document.getElementById('otp-input').value.trim();var tok=window.currentAuthToken;if(!otp||!tok){alert('OTP enter karein!');return;}var b=document.getElementById('verify-otp-submit-btn');b.disabled=true;b.innerText='Verifying...';try{var r=await fetch('/api/otp?action=verify_otp&token='+encodeURIComponent(tok)+'&otp='+encodeURIComponent(otp));var d=await r.json();if(d.status==='Success'){localStorage.setItem('yaadivo_user',JSON.stringify({email:d.email,isAdmin:d.isAdmin,adminToken:d.adminToken||null}));alert('Welcome! '+d.email);document.getElementById('auth-modal').classList.add('hidden');location.reload();}else{alert('Error: '+(d.message||'Wrong OTP'));}}catch(err){alert('Error: '+err.message);}finally{b.disabled=false;b.innerText='Verify & Login Now';}})();}" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
+                <button id="verify-otp-submit-btn" onclick="if(typeof verifyOtpSimulator==='function'){verifyOtpSimulator();}else{(async()=>{var otp=document.getElementById('otp-input').value.trim();var tok=window.currentAuthToken||currentAuthToken;if(!otp||otp.length<6){alert('6-digit OTP enter karein!');return;}var b=document.getElementById('verify-otp-submit-btn');b.disabled=true;b.innerText='Verifying...';try{var r=await fetch('/api/otp?action=verify_otp&token='+encodeURIComponent(tok)+'&otp='+encodeURIComponent(otp));var d=await r.json();if(d.status==='Success'&&d.verified){var email=d.email||document.getElementById('auth-input').value.trim();var cid='YDV-CUST-'+Math.floor(1000+Math.random()*9000);localStorage.setItem('yaadivo_user',JSON.stringify({id:cid,contact:email,isAdmin:!!d.isAdmin,adminToken:d.adminToken||null,loginTime:new Date().toISOString()}));document.getElementById('auth-modal').classList.add('hidden');document.body.style.overflow='';var abt=document.getElementById('auth-btn-text');if(abt)abt.innerText='👤 My Account';var ab=document.getElementById('auth-btn');if(ab)ab.className='flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 transition shadow-md';alert('✅ Login ho gaye! Welcome, '+email);}else{alert('❌ '+(d.message||'Galat OTP!'));}}catch(err){alert('Error: '+err.message);}finally{b.disabled=false;b.innerText='Verify & Login Now';}})();}" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition">
                     Verify & Login Now
                 </button>
 
@@ -3807,8 +3807,7 @@
             } catch (err) {
                 alert("Verification error: " + err.message);
             } finally {
-                verifyBtn.innerText = "Verify & Login Now";
-                verifyBtn.disabled = false;
+                if (verifyBtn) { verifyBtn.innerText = "Verify & Login Now"; verifyBtn.disabled = false; }
             }
         }
 
