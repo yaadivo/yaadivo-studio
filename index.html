@@ -94,10 +94,17 @@
     <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-vanilla-dark/40 shadow-xs transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
             
-            <!-- Brand Logo & Tagline -->
-            <a href="#" class="flex items-center gap-3 group shrink-0">
-                <img src="./yaadivo-logo.png" alt="Yaadivo Logo" class="h-14 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105 duration-300">
-            </a>
+            <div class="flex items-center gap-3">
+                <!-- Mobile Hamburger Button -->
+                <button onclick="toggleMobileNavDrawer()" class="lg:hidden p-2.5 rounded-xl bg-vanilla-soft hover:bg-vanilla text-cherry transition border border-vanilla-dark/40" title="Open Menu">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Brand Logo -->
+                <a href="#" class="flex items-center gap-3 group shrink-0">
+                    <img src="./yaadivo-logo.png" alt="Yaadivo Logo" class="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105 duration-300">
+                </a>
+            </div>
 
             <!-- Search Bar (Live Product Filter) -->
             <div class="hidden md:flex items-center relative flex-1 max-w-xs lg:max-w-sm">
@@ -105,8 +112,8 @@
                 <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search frames, resin, mugs, photobooks..." class="w-full bg-slate-100/90 hover:bg-slate-100 rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-cherry focus:bg-white border border-slate-200 transition">
             </div>
 
-            <!-- Navigation Links & Categories -->
-            <div class="hidden xl:flex items-center gap-6 text-sm font-bold text-slate-700">
+            <!-- Navigation Links & Categories (Desktop lg & xl) -->
+            <div class="hidden lg:flex items-center gap-5 text-sm font-bold text-slate-700">
                 <!-- Occasions Dropdown Trigger -->
                 <div class="relative group py-2">
                     <button class="flex items-center gap-1 hover:text-cherry transition">
@@ -146,7 +153,7 @@
 
             <!-- Right Actions: Wishlist, Track, Studio Admin, Account / OTP, Cart -->
             <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                <!-- Track Order Button (Mobile / Tablet) -->
+                <!-- Track Order Button (Header shortcut) -->
                 <button onclick="openTrackModal()" title="Track Your Order" class="p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
                     <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </button>
@@ -163,10 +170,11 @@
                     <span class="hidden sm:inline">Studio Admin</span>
                 </button>
 
-                <!-- Customer Account / OTP Login -->
+                <!-- Customer Account / OTP Login Button -->
                 <button id="auth-btn" onclick="handleAuthButtonClick()" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
                     <i data-lucide="user-check" class="w-4 h-4"></i>
-                    <span id="auth-btn-text">Login with OTP</span>
+                    <span id="auth-btn-text" class="hidden sm:inline">Login with OTP</span>
+                    <span class="sm:hidden font-bold">Login</span>
                 </button>
 
                 <!-- Cart Button -->
@@ -185,6 +193,71 @@
             </div>
         </div>
     </nav>
+
+    <!-- MOBILE NAVIGATION SLIDE-OVER DRAWER -->
+    <div id="mobile-nav-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden transition-all">
+        <div class="absolute inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl flex flex-col justify-between p-6 overflow-y-auto animate-in slide-in-from-left duration-300">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <img src="./yaadivo-logo.png" alt="Yaadivo" class="h-10 w-auto object-contain">
+                    <button onclick="toggleMobileNavDrawer()" class="p-2 rounded-xl text-slate-400 hover:text-cherry">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="py-4 space-y-1">
+                    <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Categories</p>
+                    <a href="#frames" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="image" class="w-4 h-4 text-cherry"></i>
+                        <span>Photo Frames (All Sizes)</span>
+                    </a>
+                    <a href="#resin" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                        <span>Jaimala Resin Preservation</span>
+                    </a>
+                    <a href="#photobooks" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="book-open" class="w-4 h-4 text-cherry"></i>
+                        <span>Layflat Photobooks</span>
+                    </a>
+                    <a href="#custom-gifts" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="coffee" class="w-4 h-4 text-cherry"></i>
+                        <span>Mugs & Pillows</span>
+                    </a>
+                    <a href="#wall-art" onclick="toggleMobileNavDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:bg-vanilla-soft hover:text-cherry">
+                        <i data-lucide="palette" class="w-4 h-4 text-cherry"></i>
+                        <span>Wall Art & Canvas</span>
+                    </a>
+
+                    <div class="pt-4 border-t border-slate-100">
+                        <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Occasions</p>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Anniversary');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💍 Anniversary Gifts</button>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Birthday');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">🎂 Birthday Specials</button>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Wedding');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💒 Wedding Keepsakes</button>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByOccasion('Valentine');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">❤️ Valentine & Couples</button>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100">
+                        <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 px-3 pb-1">Shop For</p>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Him');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">👔 Gifts for Him</button>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Her');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">👗 Gifts for Her</button>
+                        <button onclick="toggleMobileNavDrawer(); filterCatalogByRecipient('Couple');" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry">💑 For Couples</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 space-y-2">
+                <button onclick="toggleMobileNavDrawer(); openTrackModal();" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-vanilla text-cherry font-bold text-xs uppercase tracking-wider shadow-xs">
+                    <i data-lucide="truck" class="w-4 h-4"></i>
+                    <span>Track Your Order</span>
+                </button>
+                <a href="https://api.whatsapp.com/send?phone=919235843640&text=Hi%20Yaadivo,%20I%20have%20an%20inquiry%20regarding%20custom%20gifts" target="_blank" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider shadow-xs">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>WhatsApp Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================================== -->
     <!--                      HERO BANNER SECTION                       -->
@@ -1998,6 +2071,14 @@
     <script>
         lucide.createIcons();
 
+        // Mobile Nav Drawer Toggle
+        function toggleMobileNavDrawer() {
+            const drawer = document.getElementById('mobile-nav-drawer');
+            if (drawer) {
+                drawer.classList.toggle('hidden');
+            }
+        }
+
         // 1. Master Product Catalog (Dynamic with Default Fallback)
         let masterProducts = [
             { 
@@ -2008,6 +2089,8 @@
                 price: 299, 
                 desc: "Handcrafted natural wood desk frame with clear acrylic glass protection.", 
                 tag: "Bestseller",
+                occasions: ["birthday", "anniversary", "valentine", "wedding"],
+                recipients: ["him", "her", "couple"],
                 img: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2018,6 +2101,8 @@
                 price: 599, 
                 desc: "A4 size premium matte finish frame for family, baby & couple memories.", 
                 tag: "Popular",
+                occasions: ["anniversary", "birthday", "wedding"],
+                recipients: ["couple", "him", "her"],
                 img: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2028,6 +2113,8 @@
                 price: 1299, 
                 desc: "High impact master living room statement frame with archival silk print.", 
                 tag: "Premium",
+                occasions: ["anniversary", "wedding"],
+                recipients: ["couple", "her"],
                 img: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2038,6 +2125,8 @@
                 price: 1899, 
                 desc: "Huge luxury exhibition gallery framing for wedding couples & living halls.", 
                 tag: "Luxury",
+                occasions: ["wedding", "anniversary"],
+                recipients: ["couple"],
                 img: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2047,6 +2136,8 @@
                 price: 349, 
                 desc: "Reveals your custom photo in seconds when hot tea or coffee is poured.", 
                 tag: "Mug",
+                occasions: ["birthday", "valentine", "anniversary"],
+                recipients: ["him", "her"],
                 img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2056,6 +2147,8 @@
                 price: 499, 
                 desc: "Super soft micro-velvet & fluffy fur with high-definition edge-to-edge print.", 
                 tag: "Pillow",
+                occasions: ["valentine", "anniversary", "birthday"],
+                recipients: ["her", "couple"],
                 img: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2065,6 +2158,8 @@
                 price: 599, 
                 desc: "Swipe sparkling two-tone sequins with fingers to reveal secret photo.", 
                 tag: "Pillow",
+                occasions: ["birthday", "valentine"],
+                recipients: ["her", "him"],
                 img: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2074,6 +2169,8 @@
                 price: 249, 
                 desc: "Glossy microwave & dishwasher safe premium ceramic couple mug.", 
                 tag: "Mug",
+                occasions: ["birthday", "anniversary"],
+                recipients: ["him", "her"],
                 img: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2084,6 +2181,8 @@
                 price: 2499, 
                 desc: "Seamless 180° panoramic spreads with luxury handcrafted leatherette box.",
                 tag: "Royal Album",
+                occasions: ["wedding", "anniversary"],
+                recipients: ["couple"],
                 img: "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2094,6 +2193,8 @@
                 price: 1799, 
                 desc: "Document month-by-month milestone memories in smudge-free silk matte.",
                 tag: "Milestone",
+                occasions: ["birthday"],
+                recipients: ["couple", "her"],
                 img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80" 
             },
             { 
@@ -2104,6 +2205,8 @@
                 price: 1299, 
                 desc: "Compact coffee table photobook with golden foil embossing on the cover.",
                 tag: "Travel Book",
+                occasions: ["anniversary", "birthday", "valentine"],
+                recipients: ["couple", "him", "her"],
                 img: "https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=800&q=80" 
             },
             {
@@ -2114,6 +2217,8 @@
                 price: 1499,
                 desc: "100% pure cotton 420 GSM canvas wrapped around pine wood frame with waterproof matte coating.",
                 tag: "Canvas",
+                occasions: ["anniversary", "wedding"],
+                recipients: ["couple", "her"],
                 img: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80"
             },
             {
@@ -2124,6 +2229,8 @@
                 price: 1999,
                 desc: "Ultra-glossy 5mm acrylic glass sheet with metallic floating wall studs for high-end modern homes.",
                 tag: "Acrylic Glass",
+                occasions: ["anniversary", "wedding", "birthday"],
+                recipients: ["him", "couple"],
                 img: "https://images.unsplash.com/photo-1582561424760-0321d75e81fa?auto=format&fit=crop&w=800&q=80"
             },
             {
@@ -2134,6 +2241,8 @@
                 price: 1699,
                 desc: "Nine memorable square photos designed together in an elegant minimal matting with black border.",
                 tag: "Collage Frame",
+                occasions: ["anniversary", "birthday"],
+                recipients: ["couple", "her"],
                 img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
             },
             {
@@ -2144,6 +2253,8 @@
                 price: 2899,
                 desc: "One single continuous landscape or wedding portrait split across 3 dramatic vertical panels.",
                 tag: "Split Set",
+                occasions: ["wedding", "anniversary"],
+                recipients: ["couple"],
                 img: "https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=800&q=80"
             }
         ];
@@ -2328,10 +2439,36 @@
                            (p.category || '').toLowerCase().includes(q) ||
                            (p.tag || '').toLowerCase().includes(q);
                 }
-                if (filter.startsWith('occasion:') || filter.startsWith('recipient:')) {
-                    return true;
+                if (filter.startsWith('occasion:')) {
+                    const occ = filter.replace('occasion:', '');
+                    return (p.occasions && p.occasions.includes(occ)) || (p.desc || '').toLowerCase().includes(occ) || (p.name || '').toLowerCase().includes(occ);
+                }
+                if (filter.startsWith('recipient:')) {
+                    const rec = filter.replace('recipient:', '');
+                    return (p.recipients && p.recipients.includes(rec)) || (p.desc || '').toLowerCase().includes(rec) || (p.name || '').toLowerCase().includes(rec);
                 }
                 return (p.category || '') === filter;
+            }
+
+            // Category sections show/hide logic based on active filter
+            const framesSection = document.getElementById('frames');
+            const resinSection = document.getElementById('resin');
+            const giftsSection = document.getElementById('custom-gifts');
+            const pbSection = document.getElementById('photobooks');
+            const wallartSection = document.getElementById('wall-art');
+
+            if (filter === 'all' || filter === 'bestseller' || filter.startsWith('search:') || filter.startsWith('occasion:') || filter.startsWith('recipient:')) {
+                if (framesSection) framesSection.classList.remove('hidden');
+                if (resinSection) resinSection.classList.remove('hidden');
+                if (giftsSection) giftsSection.classList.remove('hidden');
+                if (pbSection) pbSection.classList.remove('hidden');
+                if (wallartSection) wallartSection.classList.remove('hidden');
+            } else {
+                if (framesSection) framesSection.classList.toggle('hidden', filter !== 'frame');
+                if (resinSection) resinSection.classList.toggle('hidden', filter !== 'resin');
+                if (giftsSection) giftsSection.classList.toggle('hidden', filter !== 'gift');
+                if (pbSection) pbSection.classList.toggle('hidden', filter !== 'photobook');
+                if (wallartSection) wallartSection.classList.toggle('hidden', filter !== 'wallart');
             }
 
             // 1. Frames Grid
