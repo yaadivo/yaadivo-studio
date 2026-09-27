@@ -2621,7 +2621,7 @@
                 }).join('');
             }
 
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') { try { lucide.createIcons(); } catch(e) { console.warn('lucide error', e); } }
         }
 
         // Fetch Live Catalog & Announcements from Firebase/Cloudinary
@@ -2647,8 +2647,12 @@
         }
 
         // Initial render
-        renderLiveCatalog();
-        fetchLiveCatalog();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => { renderLiveCatalog(); fetchLiveCatalog(); });
+        } else {
+            renderLiveCatalog();
+            fetchLiveCatalog();
+        }
 
         // Hero Size Selector
         let currentHeroPrice = 299;
@@ -4553,7 +4557,7 @@
             }
         }
 
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') { try { lucide.createIcons(); } catch(e) { console.warn('lucide error', e); } }
     </script>
 </body>
 </html>
