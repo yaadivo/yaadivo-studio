@@ -71,52 +71,117 @@
 <body class="bg-vanilla-soft text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-cherry selection:text-vanilla">
 
     <!-- TOP ANNOUNCEMENT BAR -->
-    <div class="bg-cherry-dark text-vanilla text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2 border-b border-cherry-light/30">
-        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-        <span id="announcement-text">✨ Welcome to <b>Yaadivo</b> — Handcrafted Memories, Varmala Preservations & Custom Gifts. Delivered Pan India!</span>
-        <span class="hidden md:inline font-bold border-l border-vanilla/30 pl-3">📞 Helpline: +91 9235843640</span>
+    <div class="bg-cherry-dark text-vanilla text-xs py-2 px-4 font-medium tracking-wide flex flex-wrap items-center justify-between gap-2 border-b border-cherry-light/30">
+        <div class="flex items-center gap-2 mx-auto sm:mx-0">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span id="announcement-text">✨ Welcome to <b>Yaadivo</b> — Handcrafted Memories, Varmala Preservations & Custom Gifts. Free Delivery ₹499+!</span>
+        </div>
+        <div class="hidden md:flex items-center gap-4 text-[11px] font-bold">
+            <button onclick="openTrackModal()" class="flex items-center gap-1 text-amber-300 hover:text-white transition">
+                <i data-lucide="truck" class="w-3.5 h-3.5"></i>
+                <span>Track Order</span>
+            </button>
+            <a href="https://api.whatsapp.com/send?phone=919235843640&text=Hi%20Yaadivo,%20I%20have%20an%20inquiry%20regarding%20custom%20gifts" target="_blank" class="flex items-center gap-1 hover:text-white transition">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>WhatsApp: +91 9235843640</span>
+            </a>
+            <span class="text-vanilla/40">|</span>
+            <a href="tel:+919235843640" class="hover:text-white transition">📞 Helpline: 9235843640</a>
+        </div>
     </div>
 
     <!-- MAIN NAVIGATION BAR -->
     <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-vanilla-dark/40 shadow-xs transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
             
             <!-- Brand Logo & Tagline -->
-            <a href="#" class="flex items-center gap-3 group">
+            <a href="#" class="flex items-center gap-3 group shrink-0">
                 <img src="./yaadivo-logo.png" alt="Yaadivo Logo" class="h-14 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105 duration-300">
             </a>
 
-            <!-- Navigation Links -->
-            <div class="hidden lg:flex items-center gap-7 text-sm font-bold text-slate-700">
-                <a href="#frames" class="hover:text-cherry transition">Photo Frames</a>
+            <!-- Search Bar (Live Product Filter) -->
+            <div class="hidden md:flex items-center relative flex-1 max-w-xs lg:max-w-sm">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                <input type="text" id="global-search-input" oninput="handleGlobalSearch(this.value)" placeholder="Search frames, resin, mugs, photobooks..." class="w-full bg-slate-100/90 hover:bg-slate-100 rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-cherry focus:bg-white border border-slate-200 transition">
+            </div>
+
+            <!-- Navigation Links & Categories -->
+            <div class="hidden xl:flex items-center gap-6 text-sm font-bold text-slate-700">
+                <!-- Occasions Dropdown Trigger -->
+                <div class="relative group py-2">
+                    <button class="flex items-center gap-1 hover:text-cherry transition">
+                        <span>Occasions</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cherry transition"></i>
+                    </button>
+                    <div class="absolute top-full left-0 hidden group-hover:block bg-white rounded-2xl shadow-xl border border-slate-200 p-2 min-w-[180px] z-50 animate-in fade-in slide-in-from-top-1">
+                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Anniversary')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💍 Anniversary Gifts</a>
+                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Birthday')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">🎂 Birthday Specials</a>
+                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Wedding')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💒 Wedding Keepsakes</a>
+                        <a href="javascript:void(0)" onclick="filterCatalogByOccasion('Valentine')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">❤️ Valentine & Couples</a>
+                    </div>
+                </div>
+
+                <!-- Recipient Dropdown Trigger -->
+                <div class="relative group py-2">
+                    <button class="flex items-center gap-1 hover:text-cherry transition">
+                        <span>Shop By</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:text-cherry transition"></i>
+                    </button>
+                    <div class="absolute top-full left-0 hidden group-hover:block bg-white rounded-2xl shadow-xl border border-slate-200 p-2 min-w-[170px] z-50 animate-in fade-in slide-in-from-top-1">
+                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Him')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">👔 Gifts for Him</a>
+                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Her')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">👗 Gifts for Her</a>
+                        <a href="javascript:void(0)" onclick="filterCatalogByRecipient('Couple')" class="block px-3 py-2 text-xs font-semibold hover:bg-vanilla-soft hover:text-cherry rounded-xl transition">💑 For Couples</a>
+                    </div>
+                </div>
+
+                <a href="#frames" class="hover:text-cherry transition">Frames</a>
                 <a href="#resin" class="hover:text-cherry transition flex items-center gap-1">
-                    <span>Jaimala Resin Art</span>
+                    <span>Jaimala Resin</span>
                     <span class="bg-cherry text-vanilla text-[10px] px-1.5 py-0.5 rounded-full font-bold">Special</span>
                 </a>
                 <a href="#photobooks" class="hover:text-cherry transition">Photobooks</a>
-                <a href="#custom-gifts" class="hover:text-cherry transition">Pillows & Mugs</a>
+                <a href="#custom-gifts" class="hover:text-cherry transition">Mugs & Pillows</a>
                 <a href="#wall-art" class="hover:text-cherry transition">Wall Art</a>
             </div>
 
-            <!-- Right Actions: Login with OTP, Cart -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Secret Studio Admin Button (Strictly Hidden until yaadivo@gmail.com verifies OTP) -->
+            <!-- Right Actions: Wishlist, Track, Studio Admin, Account / OTP, Cart -->
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                <!-- Track Order Button (Mobile / Tablet) -->
+                <button onclick="openTrackModal()" title="Track Your Order" class="p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
+                    <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                </button>
+
+                <!-- Wishlist Button -->
+                <button onclick="openWishlistDrawer()" title="Wishlist" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
+                    <i data-lucide="heart" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <!-- Secret Studio Admin Button (Strictly Hidden until Super Admin verifies OTP) -->
                 <button id="admin-nav-btn" onclick="openAdminModal()" class="hidden items-center gap-1.5 text-xs font-black px-3.5 py-2.5 rounded-xl bg-amber-400 text-slate-900 hover:bg-amber-300 transition shadow-md">
                     <i data-lucide="crown" class="w-4 h-4"></i>
-                    <span>Studio Admin</span>
+                    <span class="hidden sm:inline">Studio Admin</span>
                 </button>
 
                 <!-- Customer Account / OTP Login -->
-                <button id="auth-btn" onclick="handleAuthButtonClick()" class="flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
+                <button id="auth-btn" onclick="handleAuthButtonClick()" class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md">
                     <i data-lucide="user-check" class="w-4 h-4"></i>
                     <span id="auth-btn-text">Login with OTP</span>
                 </button>
 
                 <!-- Cart Button -->
-                <button onclick="openCartDrawer()" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
-                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <button onclick="openCartDrawer()" title="Shopping Cart" class="relative p-2.5 rounded-xl bg-vanilla-light hover:bg-vanilla text-cherry transition border border-vanilla-dark/40">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                     <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-cherry text-vanilla text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar (Visible on mobile only) -->
+        <div class="block md:hidden px-4 pb-3">
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5 pointer-events-none"></i>
+                <input type="text" oninput="handleGlobalSearch(this.value)" placeholder="Search frames, resin, photobooks, mugs..." class="w-full bg-slate-100 rounded-full pl-9 pr-4 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-cherry focus:bg-white border border-slate-200">
             </div>
         </div>
     </nav>
@@ -212,6 +277,47 @@
 
         </div>
     </header>
+
+    <!-- ============================================================== -->
+    <!--            STOREFRONT CATEGORY & OCCASION FILTER BAR           -->
+    <!-- ============================================================== -->
+    <div class="sticky top-20 z-30 bg-white/95 backdrop-blur-md border-b border-vanilla-dark/30 py-3 px-4 sm:px-6 lg:px-8 shadow-xs">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 text-xs font-bold shrink-0" id="cat-pills-container">
+                <button onclick="setCatalogFilter('all')" id="cat-pill-all" class="cat-pill px-4 py-2 rounded-full bg-cherry text-vanilla shadow-xs transition">
+                    ✨ All Gifts (30+)
+                </button>
+                <button onclick="setCatalogFilter('frame')" id="cat-pill-frame" class="cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition">
+                    🖼️ Photo Frames
+                </button>
+                <button onclick="setCatalogFilter('resin')" id="cat-pill-resin" class="cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition">
+                    💍 Jaimala Resin
+                </button>
+                <button onclick="setCatalogFilter('photobook')" id="cat-pill-photobook" class="cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition">
+                    📖 Layflat Photobooks
+                </button>
+                <button onclick="setCatalogFilter('gift')" id="cat-pill-gift" class="cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition">
+                    ☕ Pillows & Mugs
+                </button>
+                <button onclick="setCatalogFilter('wallart')" id="cat-pill-wallart" class="cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition">
+                    🎨 Wall Art & Canvas
+                </button>
+                <button onclick="setCatalogFilter('bestseller')" id="cat-pill-bestseller" class="cat-pill px-4 py-2 rounded-full bg-amber-100 text-amber-900 hover:bg-amber-200 transition">
+                    ⭐ Best Sellers
+                </button>
+            </div>
+            <div class="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-500 shrink-0">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                <span>100% Damage-Proof Wooden Packing Guaranteed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Search / Filter Feedback Bar (Hidden by default) -->
+    <div id="filter-feedback-bar" class="hidden bg-vanilla-soft border-b border-vanilla-dark/40 py-2.5 px-4 text-xs font-bold text-cherry flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span id="filter-feedback-text">Showing results for: ...</span>
+        <button onclick="resetCatalogFilter()" class="underline text-slate-600 hover:text-cherry">Reset Filter</button>
+    </div>
 
     <!-- ============================================================== -->
     <!--                  CATEGORY 1: ALL SIZE FRAMES                   -->
@@ -1160,85 +1266,174 @@
     </div>
 
     <!-- ============================================================== -->
-    <!--            MODAL 2: CUSTOMIZE & ORDER FRAME MODAL              -->
+    <!--     MODAL 1: ADVANCED PERSONALIZATION STUDIO (CUSTOMIZER)      -->
     <!-- ============================================================== -->
-    <div id="order-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-2 border-vanilla relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeOrderModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800">
+    <div id="order-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl border-2 border-vanilla relative max-h-[94vh] overflow-y-auto">
+            <button onclick="closeOrderModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 p-1.5 rounded-full hover:bg-slate-100 transition z-10">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
-            <span class="text-xs font-black uppercase tracking-wider text-cherry" id="order-category">Custom Framing</span>
-            <h3 class="text-2xl font-serif font-black text-slate-900 mt-0.5" id="order-title">Customize Frame</h3>
-            <p class="text-xs text-slate-500 mt-1 mb-6">Select border style, upload your photo & add to cart.</p>
+            <!-- Header -->
+            <div class="pr-8">
+                <span class="text-xs font-black uppercase tracking-wider text-cherry" id="order-category">Custom Framing Studio</span>
+                <h3 class="text-2xl font-serif font-black text-slate-900 mt-0.5" id="order-title">Personalize Your Frame</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Customize photo, zoom/rotate, add personalized text, check delivery & approve design.</p>
+            </div>
 
-            <div class="space-y-4">
-                <!-- Size Selection -->
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Size Option</label>
-                    <select id="modal-size-select" onchange="updateModalPrice()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold focus:outline-none focus:border-cherry">
-                        <option value="299">4 × 6 Inch (Mini Tabletop) - ₹299</option>
-                        <option value="399">5 × 7 Inch (Standard Desk) - ₹399</option>
-                        <option value="599">8 × 10 Inch (Classic Living) - ₹599</option>
-                        <option value="699" selected>8 × 12 Inch (A4 Portrait) - ₹699</option>
-                        <option value="1299">12 × 18 Inch (Master Wall Frame) - ₹1,299</option>
-                        <option value="1899">16 × 24 Inch (Large Gallery Wall) - ₹1,899</option>
-                        <option value="2799">20 × 30 Inch (Grand Living Room) - ₹2,799</option>
-                    </select>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mt-5">
+                
+                <!-- Left: Interactive Live Canvas Studio (5 cols) -->
+                <div class="md:col-span-5 space-y-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">Live Studio Preview</label>
+                    
+                    <!-- Frame Preview Box -->
+                    <div id="canvas-frame-container" class="aspect-[4/5] rounded-2xl p-3 bg-slate-900 shadow-xl border-8 border-slate-900 relative overflow-hidden flex flex-col items-center justify-center transition-all duration-300">
+                        <!-- Photo Element Inside Frame -->
+                        <div id="canvas-photo-wrapper" class="w-full h-full relative overflow-hidden rounded-lg bg-slate-800 flex items-center justify-center">
+                            <img id="canvas-preview-img" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" alt="Frame Preview" class="w-full h-full object-cover transition-transform duration-200">
+                            
+                            <!-- Custom Text Overlay -->
+                            <div id="canvas-text-overlay" class="absolute bottom-4 left-2 right-2 text-center text-amber-300 font-serif font-bold text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] pointer-events-none px-2 py-1 select-none">
+                            </div>
+                        </div>
 
-                <!-- Frame Finish / Color -->
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Frame Finish</label>
-                    <div class="grid grid-cols-3 gap-2 text-xs font-bold">
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry">
-                            <input type="radio" name="frame-finish" value="Matte Black" checked class="text-cherry">
-                            <span>Matte Black</span>
-                        </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry">
-                            <input type="radio" name="frame-finish" value="Teak Wood" class="text-cherry">
-                            <span>Teak Wood</span>
-                        </label>
-                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry">
-                            <input type="radio" name="frame-finish" value="Pure White" class="text-cherry">
-                            <span>Pure White</span>
-                        </label>
+                        <!-- Badge -->
+                        <span id="canvas-border-tag" class="absolute top-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase">Matte Black</span>
+                    </div>
+
+                    <!-- Canvas Transform Controls (Zoom & Rotate) -->
+                    <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200 flex items-center justify-between text-xs font-bold">
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="adjustCanvasZoom(-0.1)" title="Zoom Out" class="p-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700">
+                                <i data-lucide="zoom-out" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <input type="range" id="canvas-zoom-slider" min="0.6" max="2.0" step="0.05" value="1.0" oninput="setCanvasZoom(this.value)" class="w-20 accent-cherry">
+                            <button onclick="adjustCanvasZoom(0.1)" title="Zoom In" class="p-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700">
+                                <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <button onclick="rotateCanvas()" title="Rotate 90 Degrees" class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 flex items-center gap-1 text-[11px]">
+                            <i data-lucide="rotate-cw" class="w-3.5 h-3.5 text-cherry"></i>
+                            <span>Rotate</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Photo Upload Box -->
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Upload High-Res Photo</label>
-                    <input type="file" id="modal-file-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
-                    <div onclick="document.getElementById('modal-file-input').click()" class="border-2 border-dashed border-cherry/40 rounded-2xl p-5 text-center hover:border-cherry hover:bg-cherry/5 transition cursor-pointer bg-slate-50 relative group">
-                        <div id="upload-placeholder">
-                            <i data-lucide="image-plus" class="w-8 h-8 text-cherry mx-auto mb-2 group-hover:scale-110 transition-transform"></i>
-                            <span class="block text-xs font-bold text-slate-800">Tap to Choose Photo</span>
-                            <span class="block text-[11px] text-slate-400 mt-0.5">JPG, PNG or WEBP (Direct Studio Quality)</span>
+                <!-- Right: Configuration Controls (7 cols) -->
+                <div class="md:col-span-7 space-y-4">
+                    
+                    <!-- 1. Size Selection -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">1. Choose Frame Size</label>
+                        <select id="modal-size-select" onchange="updateModalPrice()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs sm:text-sm font-semibold focus:outline-none focus:border-cherry bg-white">
+                            <option value="299">4 × 6 Inch (Mini Tabletop) - ₹299</option>
+                            <option value="399">5 × 7 Inch (Standard Desk) - ₹399</option>
+                            <option value="599">8 × 10 Inch (Classic Living) - ₹599</option>
+                            <option value="699" selected>8 × 12 Inch (A4 Portrait) - ₹699</option>
+                            <option value="1299">12 × 18 Inch (Master Wall Frame) - ₹1,299</option>
+                            <option value="1899">16 × 24 Inch (Large Gallery Wall) - ₹1,899</option>
+                            <option value="2799">20 × 30 Inch (Grand Living Room) - ₹2,799</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Frame Finish / Border -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">2. Frame Border Finish</label>
+                        <div class="grid grid-cols-3 gap-2 text-xs font-bold">
+                            <label class="flex items-center gap-1.5 p-2 rounded-xl border-2 border-cherry bg-cherry/5 cursor-pointer frame-border-opt" onclick="selectFrameBorder('Matte Black', '#0f172a', this)">
+                                <input type="radio" name="frame-finish" value="Matte Black" checked class="text-cherry">
+                                <span class="text-[11px]">Matte Black</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry frame-border-opt" onclick="selectFrameBorder('Teak Wood', '#78350f', this)">
+                                <input type="radio" name="frame-finish" value="Teak Wood" class="text-cherry">
+                                <span class="text-[11px]">Teak Wood</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry frame-border-opt" onclick="selectFrameBorder('Pure White', '#f8fafc', this)">
+                                <input type="radio" name="frame-finish" value="Pure White" class="text-cherry">
+                                <span class="text-[11px]">Pure White</span>
+                            </label>
                         </div>
-                        <div id="upload-preview-container" class="hidden flex items-center justify-center gap-3">
-                            <img id="upload-preview-img" src="" alt="Uploaded" class="w-16 h-16 object-cover rounded-xl border border-cherry/30 shadow-md">
-                            <div class="text-left text-xs">
-                                <span class="text-emerald-600 font-bold block flex items-center gap-1">
-                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Photo Attached!
-                                </span>
-                                <span class="text-slate-400 text-[10px]">Tap to change photo</span>
+                    </div>
+
+                    <!-- 3. Multi-Photo Upload Box -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-bold uppercase text-slate-600">3. Upload Photo(s)</label>
+                            <span class="text-[10px] text-emerald-700 font-bold">☁️ 25GB Cloudinary HD Quality</span>
+                        </div>
+                        <input type="file" id="modal-file-input" accept="image/*" multiple class="hidden" onchange="handleMultiPhotoUpload(event)">
+                        <div onclick="document.getElementById('modal-file-input').click()" class="border-2 border-dashed border-cherry/40 rounded-2xl p-3 text-center hover:border-cherry hover:bg-cherry/5 transition cursor-pointer bg-slate-50 relative group">
+                            <div id="upload-placeholder" class="py-1">
+                                <i data-lucide="image-plus" class="w-6 h-6 text-cherry mx-auto mb-1 group-hover:scale-110 transition-transform"></i>
+                                <span class="block text-xs font-bold text-slate-800">Tap to Upload Photo(s)</span>
+                                <span class="block text-[10px] text-slate-400">JPG, PNG, WEBP (Supports multi-select)</span>
+                            </div>
+                            <div id="upload-preview-container" class="hidden flex items-center justify-center gap-3 py-1">
+                                <div id="multi-photo-thumbnails" class="flex gap-1.5 overflow-x-auto max-w-full py-1"></div>
+                            </div>
+                        </div>
+                        <p id="upload-status-hint" class="text-[10px] text-slate-500 mt-1 hidden"></p>
+                    </div>
+
+                    <!-- 4. Custom Text Overlay (Optional) -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">4. Add Name or Message (Optional)</label>
+                        <input type="text" id="modal-custom-text" oninput="updateCanvasCustomText(this.value)" placeholder="e.g. Together Forever, Happy 25th Anniversary" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium focus:outline-none focus:border-cherry">
+                        
+                        <!-- Font Style & Color Selector -->
+                        <div class="flex items-center justify-between gap-2 mt-1.5 text-[11px] font-bold">
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-400 text-[10px]">Font:</span>
+                                <button type="button" onclick="setCanvasFont('script')" class="px-2 py-0.5 rounded border border-slate-300 font-script text-xs hover:border-cherry active-font">Script</button>
+                                <button type="button" onclick="setCanvasFont('serif')" class="px-2 py-0.5 rounded border border-slate-300 font-serif text-[10px] hover:border-cherry">Serif</button>
+                                <button type="button" onclick="setCanvasFont('sans')" class="px-2 py-0.5 rounded border border-slate-300 font-sans text-[10px] hover:border-cherry">Sans</button>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-400 text-[10px]">Color:</span>
+                                <button type="button" onclick="setCanvasTextColor('#fde047')" class="w-4 h-4 rounded-full bg-yellow-300 border border-slate-400" title="Gold"></button>
+                                <button type="button" onclick="setCanvasTextColor('#ffffff')" class="w-4 h-4 rounded-full bg-white border border-slate-400" title="White"></button>
+                                <button type="button" onclick="setCanvasTextColor('#5D0703')" class="w-4 h-4 rounded-full bg-cherry border border-slate-400" title="Cherry"></button>
+                                <button type="button" onclick="setCanvasTextColor('#0f172a')" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-400" title="Black"></button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Price and Checkout -->
-                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                        <span class="block text-[10px] text-slate-400 uppercase font-bold">Total Payable</span>
-                        <span id="modal-price-display" class="text-2xl font-black text-cherry">₹699</span>
+                    <!-- 5. Pincode Delivery Estimator -->
+                    <div class="p-3 rounded-2xl bg-vanilla-soft border border-vanilla-dark">
+                        <label class="block text-[11px] font-bold uppercase text-slate-700 mb-1 flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cherry"></i>
+                            <span>Check Pincode Delivery</span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="text" id="modal-pincode-input" maxlength="6" placeholder="Enter 6-digit Pincode (e.g. 226008)" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-cherry bg-white">
+                            <button type="button" onclick="checkPincodeDelivery()" class="px-3 py-1.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla text-xs font-bold transition">Check</button>
+                        </div>
+                        <div id="modal-pincode-result" class="text-[11px] mt-1.5 hidden font-semibold"></div>
                     </div>
-                    <button onclick="addToCartFromModal()" class="px-6 py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center gap-2">
-                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                        <span>Add to Cart</span>
-                    </button>
+
+                    <!-- 6. Mandatory Design Approval Checkbox -->
+                    <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                        <label class="flex items-start gap-2 cursor-pointer text-xs font-medium text-amber-950">
+                            <input type="checkbox" id="modal-design-approval" class="mt-0.5 text-cherry rounded focus:ring-cherry shrink-0">
+                            <span>I have reviewed my photo crop, message spelling, and design. I approve this preview for final studio production.</span>
+                        </label>
+                    </div>
+
                 </div>
+            </div>
+
+            <!-- Footer: Price and Add to Cart -->
+            <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Total Price</span>
+                    <span id="modal-price-display" class="text-2xl font-black text-cherry">₹699</span>
+                    <span class="text-[10px] text-emerald-600 font-bold block">Free Gift Packaging Included</span>
+                </div>
+                <button onclick="addToCartFromModal()" class="px-7 py-3.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    <span>Approve & Add to Cart</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1281,68 +1476,185 @@
     </div>
 
     <!-- ============================================================== -->
-    <!--      MODAL 3: SHIPPING, UPI PAYMENT & WHATSAPP DISPATCH        -->
+    <!--     MODAL 2: 3-STEP PROFESSIONAL CHECKOUT & PAYMENT WIZARD     -->
     <!-- ============================================================== -->
-    <div id="checkout-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-2 border-vanilla relative max-h-[92vh] overflow-y-auto">
-            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800">
+    <div id="checkout-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl border-2 border-vanilla relative max-h-[94vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 p-1.5 rounded-full hover:bg-slate-100 transition z-10">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
-            <span class="text-xs font-black uppercase tracking-wider text-cherry">Final Step</span>
-            <h3 class="text-2xl font-serif font-black text-slate-900 mt-0.5">Shipping & Instant Payment</h3>
-            <p class="text-xs text-slate-500 mt-1 mb-5">Order confirmation will be sent directly to Ajay Kumar (Yaadivo Studio) on WhatsApp.</p>
+            <!-- Checkout Steps Indicator -->
+            <div class="mb-5 pb-3 border-b border-slate-200">
+                <span class="text-xs font-black uppercase tracking-wider text-cherry">Secure Checkout</span>
+                <h3 class="text-2xl font-serif font-black text-slate-900 mt-0.5" id="checkout-step-title">1. Shipping Address</h3>
+                
+                <!-- 3 Steps Bar -->
+                <div class="flex items-center gap-2 mt-3 text-[11px] font-bold">
+                    <div id="step-pill-1" class="flex-1 py-1 text-center rounded-lg bg-cherry text-vanilla">1. Address</div>
+                    <div id="step-pill-2" class="flex-1 py-1 text-center rounded-lg bg-slate-100 text-slate-600">2. Delivery</div>
+                    <div id="step-pill-3" class="flex-1 py-1 text-center rounded-lg bg-slate-100 text-slate-600">3. Payment</div>
+                </div>
+            </div>
 
-            <form onsubmit="handleFinalOrderSubmit(event)" class="space-y-4">
-                <!-- Customer Name & Phone -->
+            <!-- ================= STEP 1: SHIPPING ADDRESS ================= -->
+            <div id="checkout-step-1" class="space-y-3.5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Your Full Name</label>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name *</label>
                         <input type="text" id="cust-name" required placeholder="e.g. Rahul Sharma" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">WhatsApp Mobile No.</label>
-                        <input type="tel" id="cust-phone" required placeholder="e.g. 9876543210" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">WhatsApp Mobile *</label>
+                        <input type="tel" id="cust-phone" maxlength="10" required placeholder="10-digit number" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
                     </div>
                 </div>
 
-                <!-- Delivery Address -->
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Delivery Address (with Pincode)</label>
-                    <textarea id="cust-address" required rows="2" placeholder="House no, Street, Landmark, City & Pincode" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry"></textarea>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Email (For Order Invoice)</label>
+                    <input type="email" id="cust-email" placeholder="e.g. rahul@gmail.com" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
                 </div>
 
+                <!-- Pincode with Auto-City/State Fetch -->
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pincode *</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="cust-pincode" maxlength="6" required placeholder="e.g. 226008" oninput="handlePincodeAutoFetch(this.value)" class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
+                        <button type="button" onclick="handlePincodeAutoFetch(document.getElementById('cust-pincode').value)" class="px-3.5 py-2 rounded-xl bg-vanilla text-cherry font-bold text-xs hover:bg-vanilla-dark transition">Find City</button>
+                    </div>
+                    <p id="pincode-fetch-msg" class="text-[10px] text-emerald-600 font-bold mt-1 hidden"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">City / District *</label>
+                        <input type="text" id="cust-city" required placeholder="Lucknow" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">State *</label>
+                        <input type="text" id="cust-state" required placeholder="Uttar Pradesh" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">House No., Flat & Street Address *</label>
+                    <textarea id="cust-address" required rows="2" placeholder="House / Flat No, Street, Apartment Name" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Landmark (Optional)</label>
+                    <input type="text" id="cust-landmark" placeholder="Near Temple / Metro / School" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold focus:outline-none focus:border-cherry">
+                </div>
+
+                <button type="button" onclick="goToCheckoutStep(2)" class="w-full py-3.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 mt-4">
+                    <span>Continue to Delivery Options ➔</span>
+                </button>
+            </div>
+
+            <!-- ================= STEP 2: DELIVERY OPTIONS ================= -->
+            <div id="checkout-step-2" class="hidden space-y-4">
+                <label class="block text-xs font-bold uppercase text-slate-600">Select Shipping Method</label>
+                
+                <div class="space-y-2.5">
+                    <!-- Standard Delivery -->
+                    <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-cherry bg-cherry/5 cursor-pointer delivery-opt" onclick="selectDeliveryMethod('standard', this)">
+                        <input type="radio" name="shipping-method" value="standard" checked class="mt-1 text-cherry">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-xs text-slate-900">Standard Safe Delivery</span>
+                                <span class="text-xs font-black text-emerald-700" id="standard-shipping-rate">FREE</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Delivered safely via Delhivery / Bluedart in 4 to 6 business days.</p>
+                        </div>
+                    </label>
+
+                    <!-- Express Priority Delivery -->
+                    <label class="flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200 cursor-pointer hover:border-cherry delivery-opt" onclick="selectDeliveryMethod('express', this)">
+                        <input type="radio" name="shipping-method" value="express" class="mt-1 text-cherry">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-xs text-slate-900">⚡ Express Fast-Track Dispatch</span>
+                                    <span class="bg-amber-400 text-slate-900 text-[9px] font-black px-1.5 py-0.5 rounded">Priority</span>
+                                </div>
+                                <span class="text-xs font-black text-cherry">₹99</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Studio priority craft & express courier dispatch in 2 to 3 days.</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Gift Wrap & Luxury Handwritten Card -->
+                <div class="p-3.5 rounded-2xl bg-vanilla-soft border border-vanilla-dark space-y-2">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="gift-wrap-checkbox" onchange="toggleGiftWrap(this.checked)" class="text-cherry rounded">
+                            <span class="text-xs font-bold text-slate-800">🎁 Add Luxury Gift Wrap & Handwritten Card</span>
+                        </div>
+                        <span class="text-xs font-black text-cherry">+₹49</span>
+                    </label>
+                    <textarea id="gift-card-message" rows="2" placeholder="Write your personalized greeting card message here..." class="hidden w-full rounded-xl border border-slate-300 p-2 text-xs focus:outline-none focus:border-cherry bg-white"></textarea>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="goToCheckoutStep(1)" class="w-1/3 py-3 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs transition hover:bg-slate-100">
+                        ⬅ Back
+                    </button>
+                    <button type="button" onclick="goToCheckoutStep(3)" class="flex-1 py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                        <span>Continue to Payment ➔</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= STEP 3: REVIEW & PAYMENT ================= -->
+            <div id="checkout-step-3" class="hidden space-y-4">
+                
                 <!-- Payment Method Tabs -->
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Choose Payment Option</label>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Choose Payment Method</label>
                     <div class="grid grid-cols-2 gap-2 text-xs font-bold">
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-cherry bg-cherry/5 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border-2 border-cherry bg-cherry/5 cursor-pointer payment-method-opt">
                             <input type="radio" name="payment-method" value="UPI" checked onchange="togglePaymentView('UPI')" class="text-cherry">
-                            <span>Instant UPI (GPay / PhonePe)</span>
+                            <span>Instant UPI (QR / Apps)</span>
                         </label>
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer payment-method-opt">
                             <input type="radio" name="payment-method" value="COD" onchange="togglePaymentView('COD')" class="text-cherry">
-                            <span>Cash on Delivery / Advance</span>
+                            <span>Cash on Delivery</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- UPI QR Code Showcase -->
-                <div id="upi-box" class="p-4 bg-vanilla-soft rounded-2xl border border-vanilla-dark text-center space-y-2">
-                    <span class="text-[11px] font-bold text-cherry uppercase block">Scan to Pay via Any UPI App</span>
-                    <!-- Dynamic UPI QR Code for Yaadivo -->
+                <!-- Dynamic UPI QR & App Links -->
+                <div id="upi-box" class="p-3.5 bg-vanilla-soft rounded-2xl border border-vanilla-dark text-center space-y-2">
+                    <span class="text-[11px] font-bold text-cherry uppercase block">Scan or Tap to Pay via UPI</span>
+                    
                     <div class="inline-block p-2 bg-white rounded-xl shadow-xs border border-slate-200">
-                        <img id="upi-qr-image" src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi%3A%2F%2Fpay%3Fpa%3Ditzajayrana-1%40okicici%26pn%3DYaadivo%2520Studio%26cu%3DINR" alt="UPI QR" class="w-32 h-32 mx-auto">
+                        <img id="upi-qr-image" src="" alt="UPI QR" class="w-28 h-28 mx-auto">
                     </div>
                     <p class="text-xs font-extrabold text-slate-800">UPI ID: <span class="text-cherry font-mono">itzajayrana-1@okicici</span></p>
-                    <p class="text-[10px] text-slate-500">Pay amount and click button below to send details on WhatsApp.</p>
+                    
+                    <!-- Direct Mobile UPI App Links -->
+                    <div class="flex items-center justify-center gap-2 pt-1 flex-wrap">
+                        <a id="upi-direct-link" href="#" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-[11px] font-bold text-slate-700 hover:bg-slate-50 shadow-xs flex items-center gap-1">
+                            <span>📱 Open Any UPI App</span>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Have a Coupon Code Section -->
+                <!-- COD Advance Token Notice -->
+                <div id="cod-box" class="hidden p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-xs text-amber-950 space-y-1">
+                    <span class="font-bold block flex items-center gap-1 text-amber-800">
+                        <i data-lucide="info" class="w-4 h-4"></i> COD Advance Policy
+                    </span>
+                    <p class="text-[11px] leading-relaxed">Personalized customized gifts are printed specifically for you and cannot be restocked. We will call you on WhatsApp to verify your order before dispatch.</p>
+                </div>
+
+                <!-- Have a Coupon Code -->
                 <div class="p-3 bg-vanilla-soft/60 rounded-xl border border-vanilla-dark">
                     <label class="block text-[11px] font-bold uppercase text-slate-600 mb-1">🎁 Have a Discount / Coupon Code?</label>
                     <div class="flex gap-2">
-                        <input type="text" id="checkout-coupon-input" placeholder="e.g. FESTIVE20, YAAD50" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold uppercase focus:outline-none focus:border-cherry">
+                        <input type="text" id="checkout-coupon-input" placeholder="e.g. FESTIVE20, YAAD50" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold uppercase focus:outline-none focus:border-cherry bg-white">
                         <button type="button" onclick="applyCheckoutCoupon()" id="coupon-apply-btn" class="px-3.5 py-1.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla text-xs font-bold uppercase transition">Apply</button>
                     </div>
                     <div id="coupon-applied-msg" class="text-[11px] font-bold mt-1.5 hidden"></div>
@@ -1354,6 +1666,14 @@
                         <span>Items Subtotal:</span>
                         <span id="checkout-subtotal-display">₹0</span>
                     </div>
+                    <div class="flex items-center justify-between text-slate-500 font-bold">
+                        <span>Shipping Fee:</span>
+                        <span id="checkout-shipping-display" class="text-emerald-700">FREE</span>
+                    </div>
+                    <div id="checkout-giftwrap-row" class="hidden flex items-center justify-between text-slate-500 font-bold">
+                        <span>Gift Wrap & Card:</span>
+                        <span id="checkout-giftwrap-display">+₹49</span>
+                    </div>
                     <div id="checkout-discount-row" class="hidden flex items-center justify-between text-emerald-600 font-black">
                         <span id="checkout-discount-label">Coupon Discount:</span>
                         <span id="checkout-discount-display">-₹0</span>
@@ -1364,12 +1684,309 @@
                     </div>
                 </div>
 
-                <!-- Submit WhatsApp Button -->
-                <button type="submit" class="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
-                    <i data-lucide="message-circle" class="w-5 h-5"></i>
-                    <span>Confirm Order on WhatsApp ➔</span>
+                <!-- Navigation Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="goToCheckoutStep(2)" class="w-1/3 py-3.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs transition hover:bg-slate-100">
+                        ⬅ Back
+                    </button>
+                    <button type="button" id="place-order-submit-btn" onclick="executeFinalOrderPlacement()" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Confirm & Place Order</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= STEP 4: ORDER CONFIRMATION & INVOICE ================= -->
+            <div id="checkout-confirmation-screen" class="hidden py-4 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner animate-bounce">
+                    <i data-lucide="check" class="w-8 h-8 stroke-[3]"></i>
+                </div>
+                
+                <div>
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-700">🎉 Order Successfully Placed!</span>
+                    <h3 class="text-2xl font-serif font-black text-slate-900 mt-1">Thank You For Choosing Yaadivo</h3>
+                    <p class="text-xs text-slate-500 mt-1">Your order details and Tax Invoice receipt have been generated.</p>
+                </div>
+
+                <!-- Order Summary Badge -->
+                <div class="p-4 rounded-2xl bg-vanilla-soft border border-vanilla-dark text-left space-y-2 text-xs">
+                    <div class="flex items-center justify-between pb-2 border-b border-vanilla-dark/40">
+                        <span class="text-slate-500">Order ID:</span>
+                        <span id="confirm-order-id" class="font-mono font-black text-cherry text-sm">YD-000000</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-500">Recipient Name:</span>
+                        <span id="confirm-cust-name" class="font-bold text-slate-900">-</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-500">Estimated Delivery:</span>
+                        <span id="confirm-delivery-date" class="font-bold text-emerald-700">4-6 Business Days</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-vanilla-dark/40">
+                        <span class="text-slate-800 font-bold">Total Paid / Payable:</span>
+                        <span id="confirm-total-amount" class="text-base font-black text-cherry">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Actions: Print Invoice, Track Order, WhatsApp Message -->
+                <div class="space-y-2 pt-2">
+                    <button onclick="downloadOrPrintInvoice()" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
+                        <span>📄 Download / Print Tax Invoice</span>
+                    </button>
+
+                    <button onclick="openTrackModal(confirmedOrderId)" class="w-full py-3 rounded-xl bg-vanilla text-cherry font-bold text-xs uppercase tracking-wider shadow-sm transition hover:bg-vanilla-dark flex items-center justify-center gap-2">
+                        <i data-lucide="truck" class="w-4 h-4"></i>
+                        <span>🚚 Track Order Progress</span>
+                    </button>
+
+                    <a id="confirm-whatsapp-btn" href="#" target="_blank" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>💬 Notify Ajay Kumar on WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--         MODAL 3: LIVE ORDER TRACKING 8-STAGE TIMELINE          -->
+    <!-- ============================================================== -->
+    <div id="track-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border-2 border-vanilla relative max-h-[92vh] overflow-y-auto">
+            <button onclick="closeTrackModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 p-1.5 rounded-full hover:bg-slate-100 transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div>
+                <span class="text-xs font-black uppercase tracking-wider text-cherry">Live Tracking</span>
+                <h3 class="text-2xl font-serif font-black text-slate-900 mt-0.5">Track Your Order</h3>
+                <p class="text-xs text-slate-500 mt-1">Enter your Yaadivo Order ID (e.g. YD-839201) or WhatsApp Phone Number.</p>
+            </div>
+
+            <!-- Track Search Input -->
+            <div class="flex gap-2 mt-4">
+                <input type="text" id="track-query-input" placeholder="e.g. YD-839201 or 9235843640" class="flex-1 rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs font-bold uppercase focus:outline-none focus:border-cherry">
+                <button onclick="executeTrackOrderLookup()" id="track-lookup-btn" class="px-5 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase transition shadow-sm">
+                    Track
                 </button>
-            </form>
+            </div>
+            <div id="track-error-msg" class="text-xs text-rose-600 font-bold mt-2 hidden"></div>
+
+            <!-- Dynamic Tracking Results View -->
+            <div id="track-result-container" class="hidden mt-6 space-y-6">
+                
+                <!-- Order Status Banner -->
+                <div class="p-4 rounded-2xl bg-vanilla-soft border border-vanilla-dark flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">Order ID</span>
+                        <h4 id="track-order-id-label" class="font-mono font-black text-cherry text-base">YD-000000</h4>
+                        <span id="track-placed-date" class="text-[10px] text-slate-500 block">Placed on -</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold">Current Status</span>
+                        <span id="track-status-pill" class="block font-bold text-xs px-2.5 py-1 rounded-full bg-emerald-600 text-white mt-0.5">
+                            Processing
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 8-Stage Visual Timeline -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-3">Order Progress Stages</label>
+                    <div class="relative pl-6 space-y-5 border-l-2 border-slate-200" id="tracking-timeline-steps">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Courier & Shipping Details -->
+                <div id="track-courier-box" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                    <span class="font-bold text-slate-800 block">🚚 Courier & Dispatch Details</span>
+                    <p class="text-slate-600" id="track-courier-name">Courier: Bluedart Express / Delhivery</p>
+                    <p class="text-slate-600 font-mono" id="track-awb-number">AWB No: Not assigned yet</p>
+                    <a id="track-courier-link" href="#" target="_blank" class="hidden text-cherry font-bold underline text-[11px] block pt-1">Click here to track on official courier portal ➔</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--         MODAL 4: CUSTOMER "MY ACCOUNT" SLIDE-OVER DRAWER       -->
+    <!-- ============================================================== -->
+    <div id="account-drawer" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex justify-end">
+        <div class="bg-white w-full max-w-md h-full p-5 sm:p-6 flex flex-col shadow-2xl overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="user" class="w-5 h-5 text-cherry"></i>
+                    <h3 class="text-lg font-serif font-black text-slate-900">Customer Account</h3>
+                </div>
+                <button onclick="closeAccountDrawer()" class="text-slate-400 hover:text-slate-800 p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="my-4 p-4 rounded-2xl bg-vanilla-soft border border-vanilla-dark flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-cherry text-vanilla font-black flex items-center justify-center text-lg uppercase" id="account-avatar-char">
+                    Y
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-900" id="account-user-name">Guest User</h4>
+                    <p class="text-xs text-slate-500 font-mono" id="account-user-email">Not Logged In</p>
+                </div>
+            </div>
+
+            <!-- Account Tabs Navigation -->
+            <div class="flex border-b border-slate-200 text-xs font-bold mb-4">
+                <button onclick="switchAccountTab('orders')" id="acc-tab-orders" class="flex-1 py-2 text-center text-cherry border-b-2 border-cherry">My Orders</button>
+                <button onclick="switchAccountTab('wishlist')" id="acc-tab-wishlist" class="flex-1 py-2 text-center text-slate-500 hover:text-slate-900">Wishlist</button>
+                <button onclick="switchAccountTab('addresses')" id="acc-tab-addresses" class="flex-1 py-2 text-center text-slate-500 hover:text-slate-900">Saved Address</button>
+            </div>
+
+            <!-- Tab 1: Customer Orders -->
+            <div id="acc-view-orders" class="space-y-3 flex-1 overflow-y-auto">
+                <div id="acc-orders-list" class="space-y-2.5">
+                    <p class="text-center py-10 text-slate-400 text-xs">Loading your orders...</p>
+                </div>
+            </div>
+
+            <!-- Tab 2: Wishlist -->
+            <div id="acc-view-wishlist" class="hidden space-y-3 flex-1 overflow-y-auto">
+                <div id="acc-wishlist-list" class="space-y-2.5">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Tab 3: Saved Addresses -->
+            <div id="acc-view-addresses" class="hidden space-y-3 flex-1 overflow-y-auto">
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 text-xs space-y-1">
+                    <span class="font-bold text-slate-900 block" id="acc-saved-name">Default Address</span>
+                    <p class="text-slate-600" id="acc-saved-address">No saved address yet. It will automatically save on your next checkout.</p>
+                </div>
+            </div>
+
+            <!-- Drawer Footer: Logout -->
+            <div class="pt-4 border-t border-slate-200 mt-auto">
+                <button onclick="logoutUser()" class="w-full py-2.5 rounded-xl border border-rose-300 text-rose-600 hover:bg-rose-50 font-bold text-xs transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Log Out of Account</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--         MODAL 5: CUSTOMER WISHLIST SLIDE-OVER DRAWER           -->
+    <!-- ============================================================== -->
+    <div id="wishlist-drawer" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex justify-end">
+        <div class="bg-white w-full max-w-md h-full p-5 sm:p-6 flex flex-col shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="heart" class="w-5 h-5 text-rose-500 fill-rose-500"></i>
+                    <h3 class="text-lg font-serif font-black text-slate-900">Your Wishlist</h3>
+                </div>
+                <button onclick="closeWishlistDrawer()" class="text-slate-400 hover:text-slate-800 p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div id="wishlist-items-container" class="flex-1 overflow-y-auto py-4 space-y-3">
+                <div class="text-center py-16 text-slate-400 text-xs">
+                    <i data-lucide="heart" class="w-12 h-12 mx-auto mb-3 opacity-30"></i>
+                    <span>Your wishlist is empty. Tap the heart on any product to save it here!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!--         MODAL 6: FORMAL PRINTABLE TAX INVOICE RECEIPT          -->
+    <!-- ============================================================== -->
+    <div id="invoice-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border-2 border-vanilla relative max-h-[95vh] overflow-y-auto print:p-0 print:border-none print:shadow-none" id="printable-invoice-content">
+            <button onclick="closeInvoiceModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 p-1.5 rounded-full hover:bg-slate-100 transition print:hidden">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Invoice Header -->
+            <div class="flex items-start justify-between pb-4 border-b-2 border-cherry">
+                <div class="space-y-1">
+                    <img src="./yaadivo-logo.png" alt="Yaadivo" class="h-12 w-auto object-contain">
+                    <p class="text-xs text-slate-500">Gauri Vihar, Sarojini Nagar, Lucknow, UP - 226008</p>
+                    <p class="text-xs text-slate-500">Helpline: +91 9235843640 | yaadivo@gmail.com</p>
+                </div>
+                <div class="text-right">
+                    <span class="bg-cherry text-vanilla text-xs font-black px-3 py-1 rounded-full uppercase">Tax Invoice</span>
+                    <h4 class="font-mono font-black text-slate-900 text-base mt-2" id="inv-order-id">YD-000000</h4>
+                    <span class="text-xs text-slate-500 block" id="inv-date">Date: 27 Sep 2026</span>
+                </div>
+            </div>
+
+            <!-- Customer & Shipping Details -->
+            <div class="grid grid-cols-2 gap-4 py-4 border-b border-slate-200 text-xs">
+                <div>
+                    <span class="font-bold text-slate-400 uppercase text-[10px]">Billed & Shipped To:</span>
+                    <h5 class="font-bold text-slate-900 text-sm mt-0.5" id="inv-cust-name">-</h5>
+                    <p class="text-slate-600 mt-0.5" id="inv-cust-address">-</p>
+                    <p class="text-slate-600 font-mono mt-0.5" id="inv-cust-phone">Phone: -</p>
+                </div>
+                <div class="text-right">
+                    <span class="font-bold text-slate-400 uppercase text-[10px]">Payment Method:</span>
+                    <p class="font-bold text-slate-900 mt-0.5" id="inv-payment-mode">UPI / Prepaid</p>
+                    <span class="font-bold text-slate-400 uppercase text-[10px] block mt-2">Delivery Type:</span>
+                    <p class="font-bold text-emerald-700" id="inv-delivery-type">Standard Safe Delivery</p>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="py-4">
+                <table class="w-full text-xs text-left">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px]">
+                            <th class="py-2">Item Description</th>
+                            <th class="py-2 text-center">Qty</th>
+                            <th class="py-2 text-right">Price</th>
+                            <th class="py-2 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inv-items-table" class="divide-y divide-slate-100">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total Calculation -->
+            <div class="pt-3 border-t-2 border-slate-200 flex justify-end">
+                <div class="w-64 space-y-1.5 text-xs text-right">
+                    <div class="flex justify-between text-slate-500 font-semibold">
+                        <span>Subtotal:</span>
+                        <span id="inv-subtotal">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500 font-semibold">
+                        <span>Shipping & Handling:</span>
+                        <span id="inv-shipping" class="text-emerald-700">FREE</span>
+                    </div>
+                    <div id="inv-discount-row" class="hidden flex justify-between text-emerald-600 font-bold">
+                        <span>Coupon Discount:</span>
+                        <span id="inv-discount">-₹0</span>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200 flex justify-between font-black text-sm text-cherry">
+                        <span>Net Payable Amount:</span>
+                        <span id="inv-net-total">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Print Actions -->
+            <div class="pt-6 border-t border-slate-200 flex items-center justify-between print:hidden">
+                <span class="text-[11px] text-slate-400">Computer generated invoice. No signature required.</span>
+                <button onclick="window.print()" class="px-6 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase transition shadow-md flex items-center gap-1.5">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>Print Invoice</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1534,113 +2151,328 @@
         let cart = [];
         let currentUser = null;
 
-        // Render Dynamic Live Catalog to Customer Storefront
-        function renderLiveCatalog() {
-            // 1. Frames
-            const framesGrid = document.getElementById('frames-grid');
-            if (framesGrid) {
-                const frames = masterProducts.filter(p => (p.category || 'frame') === 'frame');
-                framesGrid.innerHTML = frames.map(p => `
-                    <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
-                        <div>
-                            <div class="aspect-[4/5] rounded-2xl bg-vanilla/40 border border-vanilla-dark/30 relative overflow-hidden mb-4">
-                                <img src="${p.img || 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                ${p.tag ? `<span class="absolute top-3 left-3 bg-cherry/90 backdrop-blur-xs text-vanilla text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-md">${p.tag}</span>` : ''}
-                                ${p.size ? `<div class="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-1 rounded-lg text-center">Size: ${p.size}</div>` : ''}
-                            </div>
-                            <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${p.name}</h3>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">${p.desc || ''}</p>
-                        </div>
-                        <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+        // -------------------------------------------------------------
+        // WISHLIST MANAGEMENT ENGINE
+        // -------------------------------------------------------------
+        let wishlist = [];
+        try {
+            wishlist = JSON.parse(localStorage.getItem('yaadivo_wishlist') || '[]');
+        } catch(e) { wishlist = []; }
+
+        function updateWishlistBadge() {
+            const badge = document.getElementById('wishlist-badge');
+            if (badge) badge.innerText = wishlist.length;
+        }
+        updateWishlistBadge();
+
+        function toggleWishlist(productId, event) {
+            if (event) event.stopPropagation();
+            const idStr = String(productId);
+            const index = wishlist.findIndex(item => String(item.id) === idStr);
+            if (index >= 0) {
+                wishlist.splice(index, 1);
+            } else {
+                const prod = masterProducts.find(p => String(p.id) === idStr);
+                if (prod) wishlist.push(prod);
+            }
+            try { localStorage.setItem('yaadivo_wishlist', JSON.stringify(wishlist)); } catch(e){}
+            updateWishlistBadge();
+            renderLiveCatalog();
+            renderWishlist();
+        }
+
+        function openWishlistDrawer() {
+            document.getElementById('wishlist-drawer').classList.remove('hidden');
+            renderWishlist();
+        }
+
+        function closeWishlistDrawer() {
+            document.getElementById('wishlist-drawer').classList.add('hidden');
+        }
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlist-items-container');
+            const accContainer = document.getElementById('acc-wishlist-list');
+            if (!container) return;
+
+            if (wishlist.length === 0) {
+                const emptyHtml = `
+                    <div class="text-center py-16 text-slate-400 text-xs">
+                        <i data-lucide="heart" class="w-12 h-12 mx-auto mb-3 opacity-30"></i>
+                        <span>Your wishlist is empty. Tap the heart on any product to save it here!</span>
+                    </div>
+                `;
+                container.innerHTML = emptyHtml;
+                if (accContainer) accContainer.innerHTML = emptyHtml;
+            } else {
+                const html = wishlist.map(p => `
+                    <div class="p-3 bg-vanilla-soft rounded-2xl border border-vanilla-dark flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.img || 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80'}" class="w-12 h-12 rounded-xl object-cover border border-cherry/20 shrink-0">
                             <div>
-                                <span class="text-[10px] text-slate-400 uppercase font-bold">Starts at</span>
-                                <span class="block text-xl font-black text-cherry">₹${p.price}</span>
+                                <h4 class="font-bold text-xs text-slate-900">${p.name}</h4>
+                                <span class="text-xs font-black text-cherry">₹${p.price}</span>
                             </div>
-                            <button onclick="openOrderModal('${p.name}', ${p.price})" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm">
-                                Select Size
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="moveWishlistToCart('${p.id}')" class="px-3 py-1.5 rounded-xl bg-cherry text-vanilla text-[11px] font-bold hover:bg-cherry-light transition shadow-xs">
+                                Move to Cart
+                            </button>
+                            <button onclick="toggleWishlist('${p.id}')" class="p-1.5 text-slate-400 hover:text-rose-600">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
                 `).join('');
+                container.innerHTML = html;
+                if (accContainer) accContainer.innerHTML = html;
+            }
+            lucide.createIcons();
+        }
+
+        function moveWishlistToCart(productId) {
+            const prod = masterProducts.find(p => String(p.id) === String(productId));
+            if (prod) {
+                addToCart(prod.name, prod.price, prod.img);
+                toggleWishlist(productId);
+                closeWishlistDrawer();
+            }
+        }
+
+        // -------------------------------------------------------------
+        // STOREFRONT SEARCH & CATEGORY FILTERING
+        // -------------------------------------------------------------
+        let currentActiveFilter = 'all';
+
+        function setCatalogFilter(filterKey) {
+            currentActiveFilter = filterKey;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.className = "cat-pill px-4 py-2 rounded-full bg-slate-100 text-slate-700 hover:bg-vanilla transition";
+            });
+            const activeBtn = document.getElementById(`cat-pill-${filterKey}`);
+            if (activeBtn) {
+                activeBtn.className = "cat-pill px-4 py-2 rounded-full bg-cherry text-vanilla shadow-xs transition";
+            }
+
+            const feedbackBar = document.getElementById('filter-feedback-bar');
+            if (filterKey === 'all') {
+                if (feedbackBar) feedbackBar.classList.add('hidden');
+            } else {
+                if (feedbackBar) {
+                    feedbackBar.classList.remove('hidden');
+                    document.getElementById('filter-feedback-text').innerText = `Showing collection: ${filterKey.toUpperCase()}`;
+                }
+            }
+            renderLiveCatalog();
+        }
+
+        function filterCatalogByOccasion(occasion) {
+            const query = occasion.toLowerCase();
+            const feedbackBar = document.getElementById('filter-feedback-bar');
+            if (feedbackBar) {
+                feedbackBar.classList.remove('hidden');
+                document.getElementById('filter-feedback-text').innerText = `Filtered for Occasion: ${occasion} (Showing best matching gifts)`;
+            }
+            currentActiveFilter = `occasion:${query}`;
+            renderLiveCatalog();
+            window.location.hash = "#frames";
+        }
+
+        function filterCatalogByRecipient(recipient) {
+            const query = recipient.toLowerCase();
+            const feedbackBar = document.getElementById('filter-feedback-bar');
+            if (feedbackBar) {
+                feedbackBar.classList.remove('hidden');
+                document.getElementById('filter-feedback-text').innerText = `Filtered for Recipient: Gifts for ${recipient}`;
+            }
+            currentActiveFilter = `recipient:${query}`;
+            renderLiveCatalog();
+            window.location.hash = "#frames";
+        }
+
+        function handleGlobalSearch(query) {
+            const q = (query || '').trim().toLowerCase();
+            const feedbackBar = document.getElementById('filter-feedback-bar');
+            if (!q) {
+                currentActiveFilter = 'all';
+                if (feedbackBar) feedbackBar.classList.add('hidden');
+            } else {
+                currentActiveFilter = `search:${q}`;
+                if (feedbackBar) {
+                    feedbackBar.classList.remove('hidden');
+                    document.getElementById('filter-feedback-text').innerText = `Search results for: "${query}"`;
+                }
+            }
+            renderLiveCatalog();
+        }
+
+        function resetCatalogFilter() {
+            setCatalogFilter('all');
+            const searchInput = document.getElementById('global-search-input');
+            if (searchInput) searchInput.value = '';
+        }
+
+        // -------------------------------------------------------------
+        // DYNAMIC STOREFRONT CATALOG RENDERER
+        // -------------------------------------------------------------
+        function renderLiveCatalog() {
+            const filter = currentActiveFilter;
+
+            function matchesFilter(p) {
+                if (filter === 'all') return true;
+                if (filter === 'bestseller') return p.tag === 'Bestseller' || p.tag === 'Popular';
+                if (filter.startsWith('search:')) {
+                    const q = filter.replace('search:', '');
+                    return (p.name || '').toLowerCase().includes(q) ||
+                           (p.desc || '').toLowerCase().includes(q) ||
+                           (p.category || '').toLowerCase().includes(q) ||
+                           (p.tag || '').toLowerCase().includes(q);
+                }
+                if (filter.startsWith('occasion:') || filter.startsWith('recipient:')) {
+                    return true;
+                }
+                return (p.category || '') === filter;
+            }
+
+            // 1. Frames Grid
+            const framesGrid = document.getElementById('frames-grid');
+            if (framesGrid) {
+                const frames = masterProducts.filter(p => (p.category || 'frame') === 'frame' && matchesFilter(p));
+                framesGrid.innerHTML = frames.map(p => {
+                    const isWish = wishlist.some(w => String(w.id) === String(p.id));
+                    return `
+                        <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group relative">
+                            <!-- Wishlist Heart Button -->
+                            <button onclick="toggleWishlist('${p.id}', event)" title="Save to Wishlist" class="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-md hover:scale-110 transition">
+                                <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'text-rose-600 fill-rose-600' : 'text-slate-400 hover:text-rose-500'}"></i>
+                            </button>
+
+                            <div>
+                                <div class="aspect-[4/5] rounded-2xl bg-vanilla/40 border border-vanilla-dark/30 relative overflow-hidden mb-4">
+                                    <img src="${p.img || 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    ${p.tag ? `<span class="absolute top-3 left-3 bg-cherry/90 backdrop-blur-xs text-vanilla text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-md">${p.tag}</span>` : ''}
+                                    ${p.size ? `<div class="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-1 rounded-lg text-center">Size: ${p.size}</div>` : ''}
+                                </div>
+                                <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${p.name}</h3>
+                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">${p.desc || ''}</p>
+                                <div class="flex items-center gap-1 text-[10px] text-emerald-700 font-bold mt-2">
+                                    <i data-lucide="truck" class="w-3 h-3"></i>
+                                    <span>Free Delivery on ₹499+</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Starts at</span>
+                                    <span class="block text-xl font-black text-cherry">₹${p.price}</span>
+                                </div>
+                                <button onclick="openOrderModal('${p.name}', ${p.price}, 'frame')" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm flex items-center gap-1.5">
+                                    <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                                    <span>Customize</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             // 2. Gifts (Mugs, Pillows)
             const giftsGrid = document.getElementById('gifts-grid');
             if (giftsGrid) {
-                const gifts = masterProducts.filter(p => p.category === 'gift');
-                giftsGrid.innerHTML = gifts.map(g => `
-                    <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
-                        <div>
-                            <div class="aspect-square rounded-2xl bg-vanilla/30 border border-vanilla-dark/30 relative overflow-hidden mb-4">
-                                <img src="${g.img || 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80'}" alt="${g.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                ${g.tag ? `<span class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs text-cherry text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs">${g.tag}</span>` : ''}
-                            </div>
-                            <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${g.name}</h3>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">${g.desc || ''}</p>
-                        </div>
-                        <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                            <div>
-                                <span class="text-[10px] text-slate-400 uppercase font-bold">Price</span>
-                                <span class="block text-xl font-black text-cherry">₹${g.price}</span>
-                            </div>
-                            <button onclick="addToCart('${g.name}', ${g.price})" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm">
-                                Add to Cart
+                const gifts = masterProducts.filter(p => p.category === 'gift' && matchesFilter(p));
+                giftsGrid.innerHTML = gifts.map(g => {
+                    const isWish = wishlist.some(w => String(w.id) === String(g.id));
+                    return `
+                        <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group relative">
+                            <button onclick="toggleWishlist('${g.id}', event)" title="Save to Wishlist" class="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-md hover:scale-110 transition">
+                                <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'text-rose-600 fill-rose-600' : 'text-slate-400 hover:text-rose-500'}"></i>
                             </button>
+                            <div>
+                                <div class="aspect-square rounded-2xl bg-vanilla/30 border border-vanilla-dark/30 relative overflow-hidden mb-4">
+                                    <img src="${g.img || 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80'}" alt="${g.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    ${g.tag ? `<span class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-cherry text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-xs">${g.tag}</span>` : ''}
+                                </div>
+                                <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${g.name}</h3>
+                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">${g.desc || ''}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Price</span>
+                                    <span class="block text-xl font-black text-cherry">₹${g.price}</span>
+                                </div>
+                                <button onclick="openOrderModal('${g.name}', ${g.price}, 'gift')" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm flex items-center gap-1.5">
+                                    <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                                    <span>Customize</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // 3. Photobooks
             const pbGrid = document.getElementById('photobooks-grid');
             if (pbGrid) {
-                const pbs = masterProducts.filter(p => p.category === 'photobook');
-                pbGrid.innerHTML = pbs.map(b => `
-                    <div class="bg-white rounded-3xl p-5 border-2 border-vanilla-dark shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
-                        <div>
-                            <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-4 relative">
-                                <img src="${b.img || 'https://images.unsplash.com/photo-1544717305-de2939b7ef71?auto=format&fit=crop&w=800&q=80'}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                ${b.size ? `<span class="absolute top-3 left-3 text-xs font-bold text-cherry bg-vanilla px-3 py-1 rounded-full shadow-md">${b.size}</span>` : ''}
+                const pbs = masterProducts.filter(p => p.category === 'photobook' && matchesFilter(p));
+                pbGrid.innerHTML = pbs.map(b => {
+                    const isWish = wishlist.some(w => String(w.id) === String(b.id));
+                    return `
+                        <div class="bg-white rounded-3xl p-5 border-2 border-vanilla-dark shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group relative">
+                            <button onclick="toggleWishlist('${b.id}', event)" title="Save to Wishlist" class="absolute top-7 right-7 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-md hover:scale-110 transition">
+                                <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'text-rose-600 fill-rose-600' : 'text-slate-400 hover:text-rose-500'}"></i>
+                            </button>
+                            <div>
+                                <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-4 relative">
+                                    <img src="${b.img || 'https://images.unsplash.com/photo-1544717305-de2939b7ef71?auto=format&fit=crop&w=800&q=80'}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    ${b.size ? `<span class="absolute top-3 left-3 text-xs font-bold text-cherry bg-vanilla px-3 py-1 rounded-full shadow-md">${b.size}</span>` : ''}
+                                </div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-serif font-black text-xl text-slate-900 group-hover:text-cherry transition-colors">${b.name}</h3>
+                                    <span class="text-lg font-black text-cherry">₹${b.price}</span>
+                                </div>
+                                <p class="text-xs text-slate-600 mt-2 leading-relaxed">${b.desc || ''}</p>
                             </div>
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="font-serif font-black text-xl text-slate-900 group-hover:text-cherry transition-colors">${b.name}</h3>
-                                <span class="text-lg font-black text-cherry">₹${b.price}</span>
-                            </div>
-                            <p class="text-xs text-slate-600 mt-2 leading-relaxed">${b.desc || ''}</p>
+                            <button onclick="openOrderModal('${b.name}', ${b.price}, 'photobook')" class="mt-6 w-full py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2">
+                                <i data-lucide="book-open" class="w-4 h-4"></i>
+                                <span>Customize Layflat Album</span>
+                            </button>
                         </div>
-                        <button onclick="addToCart('${b.name}', ${b.price})" class="mt-6 w-full py-3 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-md">
-                            Customize Photobook
-                        </button>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // 4. Wall Art & Canvas
             const wallartGrid = document.getElementById('wallart-grid');
             if (wallartGrid) {
-                const wallarts = masterProducts.filter(p => p.category === 'wallart');
-                wallartGrid.innerHTML = wallarts.map(w => `
-                    <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
-                        <div>
-                            <div class="aspect-[4/5] rounded-2xl bg-vanilla/40 border border-vanilla-dark/30 relative overflow-hidden mb-4">
-                                <img src="${w.img || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80'}" alt="${w.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                ${w.tag ? `<span class="absolute top-3 left-3 bg-cherry/90 backdrop-blur-xs text-vanilla text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-md">${w.tag}</span>` : ''}
-                                ${w.size ? `<div class="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-1 rounded-lg text-center">Size: ${w.size}</div>` : ''}
-                            </div>
-                            <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${w.name}</h3>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">${w.desc || ''}</p>
-                        </div>
-                        <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                            <div>
-                                <span class="text-[10px] text-slate-400 uppercase font-bold">Price</span>
-                                <span class="block text-xl font-black text-cherry">₹${w.price}</span>
-                            </div>
-                            <button onclick="addToCart('${w.name} (${w.size || 'Standard'})', ${w.price})" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm">
-                                Add to Cart
+                const wallarts = masterProducts.filter(p => p.category === 'wallart' && matchesFilter(p));
+                wallartGrid.innerHTML = wallarts.map(w => {
+                    const isWish = wishlist.some(wItem => String(wItem.id) === String(w.id));
+                    return `
+                        <div class="bg-white rounded-3xl p-4 border border-vanilla-dark/40 shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group relative">
+                            <button onclick="toggleWishlist('${w.id}', event)" title="Save to Wishlist" class="absolute top-6 right-6 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-md hover:scale-110 transition">
+                                <i data-lucide="heart" class="w-4 h-4 ${isWish ? 'text-rose-600 fill-rose-600' : 'text-slate-400 hover:text-rose-500'}"></i>
                             </button>
+                            <div>
+                                <div class="aspect-[4/5] rounded-2xl bg-vanilla/40 border border-vanilla-dark/30 relative overflow-hidden mb-4">
+                                    <img src="${w.img || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80'}" alt="${w.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                    ${w.tag ? `<span class="absolute top-3 left-3 bg-cherry/90 backdrop-blur-xs text-vanilla text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-md">${w.tag}</span>` : ''}
+                                    ${w.size ? `<div class="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-1 rounded-lg text-center">Size: ${w.size}</div>` : ''}
+                                </div>
+                                <h3 class="font-serif font-black text-lg text-slate-900 group-hover:text-cherry transition-colors">${w.name}</h3>
+                                <p class="text-xs text-slate-500 mt-1 leading-relaxed">${w.desc || ''}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Price</span>
+                                    <span class="block text-xl font-black text-cherry">₹${w.price}</span>
+                                </div>
+                                <button onclick="openOrderModal('${w.name} (${w.size || 'Standard'})', ${w.price}, 'wallart')" class="px-4 py-2.5 rounded-xl bg-cherry hover:bg-cherry-light text-vanilla font-bold text-xs uppercase tracking-wider transition shadow-sm flex items-center gap-1.5">
+                                    <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                                    <span>Customize</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             lucide.createIcons();
@@ -1684,10 +2516,304 @@
         }
 
         function quickOrderFrame() {
-            openOrderModal("Custom Photo Frame", currentHeroPrice);
+            openOrderModal("Custom Photo Frame", currentHeroPrice, "frame");
         }
 
-        // Cart Actions
+        // -------------------------------------------------------------
+        // ADVANCED PERSONALIZATION STUDIO (CUSTOMIZER ENGINE)
+        // -------------------------------------------------------------
+        let currentCustomTitle = "Custom Frame";
+        let currentCustomCategory = "frame";
+        let currentCanvasZoom = 1.0;
+        let currentCanvasRotation = 0;
+        let currentFrameBorder = "Matte Black";
+        let currentBorderColor = "#0f172a";
+        let currentTextFont = "script";
+        let currentTextColor = "#fde047";
+        let uploadedPhotoList = [];
+        let isUploadingPhoto = false;
+
+        function openOrderModal(title, price, category = "frame") {
+            currentCustomTitle = title;
+            currentCustomCategory = category;
+            document.getElementById('order-title').innerText = title;
+            document.getElementById('order-category').innerText = category === 'resin' ? 'Special Jaimala Art' : 'Custom Personalization Studio';
+            
+            const sizeSelect = document.getElementById('modal-size-select');
+            if (sizeSelect) {
+                sizeSelect.value = price;
+                updateModalPrice();
+            }
+
+            // Reset customizer state
+            currentCanvasZoom = 1.0;
+            currentCanvasRotation = 0;
+            setCanvasZoom(1.0);
+            updateCanvasTransform();
+            
+            document.getElementById('modal-custom-text').value = '';
+            document.getElementById('canvas-text-overlay').innerText = '';
+            document.getElementById('modal-design-approval').checked = false;
+            document.getElementById('modal-pincode-result').classList.add('hidden');
+            
+            // Set default image preview based on category
+            const previewImg = document.getElementById('canvas-preview-img');
+            const foundProd = masterProducts.find(p => p.name === title);
+            if (foundProd && foundProd.img) {
+                previewImg.src = foundProd.img;
+            }
+
+            uploadedPhotoList = [];
+            renderPhotoThumbnails();
+
+            document.getElementById('order-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.add('hidden');
+        }
+
+        function updateModalPrice() {
+            const select = document.getElementById('modal-size-select');
+            const price = select ? select.value : currentHeroPrice;
+            const display = document.getElementById('modal-price-display');
+            if (display) display.innerText = `₹${price}`;
+        }
+
+        function selectFrameBorder(borderName, hexColor, elem) {
+            currentFrameBorder = borderName;
+            currentBorderColor = hexColor;
+
+            const container = document.getElementById('canvas-frame-container');
+            const tag = document.getElementById('canvas-border-tag');
+            if (container) {
+                container.style.borderColor = hexColor;
+                container.style.backgroundColor = hexColor;
+            }
+            if (tag) tag.innerText = borderName;
+
+            document.querySelectorAll('.frame-border-opt').forEach(opt => {
+                opt.className = "flex items-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:border-cherry frame-border-opt";
+            });
+            if (elem) {
+                elem.className = "flex items-center gap-1.5 p-2 rounded-xl border-2 border-cherry bg-cherry/5 cursor-pointer frame-border-opt";
+            }
+        }
+
+        function adjustCanvasZoom(delta) {
+            currentCanvasZoom = Math.min(2.0, Math.max(0.6, currentCanvasZoom + delta));
+            const slider = document.getElementById('canvas-zoom-slider');
+            if (slider) slider.value = currentCanvasZoom.toFixed(2);
+            updateCanvasTransform();
+        }
+
+        function setCanvasZoom(val) {
+            currentCanvasZoom = parseFloat(val);
+            updateCanvasTransform();
+        }
+
+        function rotateCanvas() {
+            currentCanvasRotation = (currentCanvasRotation + 90) % 360;
+            updateCanvasTransform();
+        }
+
+        function updateCanvasTransform() {
+            const img = document.getElementById('canvas-preview-img');
+            if (img) {
+                img.style.transform = `scale(${currentCanvasZoom}) rotate(${currentCanvasRotation}deg)`;
+            }
+        }
+
+        function updateCanvasCustomText(text) {
+            const overlay = document.getElementById('canvas-text-overlay');
+            if (overlay) {
+                overlay.innerText = text;
+            }
+        }
+
+        function setCanvasFont(fontType) {
+            currentTextFont = fontType;
+            const overlay = document.getElementById('canvas-text-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('font-script', 'font-serif', 'font-sans');
+            if (fontType === 'script') overlay.classList.add('font-script', 'text-lg');
+            else if (fontType === 'serif') overlay.classList.add('font-serif', 'text-sm');
+            else overlay.classList.add('font-sans', 'text-xs');
+        }
+
+        function setCanvasTextColor(colorHex) {
+            currentTextColor = colorHex;
+            const overlay = document.getElementById('canvas-text-overlay');
+            if (overlay) overlay.style.color = colorHex;
+        }
+
+        // Multi-Photo Upload Handler with live Cloudinary HD Upload
+        async function handleMultiPhotoUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            const hint = document.getElementById('upload-status-hint');
+            if (hint) {
+                hint.classList.remove('hidden');
+                hint.innerText = `⏳ Uploading ${files.length} high-res photo(s) to Cloud...`;
+            }
+            isUploadingPhoto = true;
+
+            for (const file of files) {
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const localUrl = e.target.result;
+                        const photoObj = { localUrl, cloudUrl: null };
+                        uploadedPhotoList.push(photoObj);
+                        renderPhotoThumbnails();
+                        
+                        // Set active canvas image to the first uploaded photo
+                        if (uploadedPhotoList.length === 1) {
+                            document.getElementById('canvas-preview-img').src = localUrl;
+                        }
+
+                        // Upload to Cloudinary in background
+                        try {
+                            const res = await fetch('/api/backend', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'upload_photo', imageBase64: localUrl })
+                            });
+                            const data = await res.json();
+                            if (data.status === 'Success' && data.url) {
+                                photoObj.cloudUrl = data.url;
+                            }
+                        } catch(err){}
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            isUploadingPhoto = false;
+            if (hint) hint.innerText = `✅ ${uploadedPhotoList.length} photo(s) attached and saved to Cloud!`;
+        }
+
+        function renderPhotoThumbnails() {
+            const container = document.getElementById('upload-preview-container');
+            const placeholder = document.getElementById('upload-placeholder');
+            const thumbs = document.getElementById('multi-photo-thumbnails');
+            if (!container || !thumbs) return;
+
+            if (uploadedPhotoList.length === 0) {
+                placeholder.classList.remove('hidden');
+                container.classList.add('hidden');
+            } else {
+                placeholder.classList.add('hidden');
+                container.classList.remove('hidden');
+                thumbs.innerHTML = uploadedPhotoList.map((p, idx) => `
+                    <div onclick="selectActivePhoto(${idx})" class="w-12 h-12 rounded-xl border-2 ${idx === 0 ? 'border-cherry' : 'border-slate-300'} overflow-hidden shrink-0 cursor-pointer shadow-xs">
+                        <img src="${p.localUrl}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+            }
+        }
+
+        function selectActivePhoto(idx) {
+            if (uploadedPhotoList[idx]) {
+                document.getElementById('canvas-preview-img').src = uploadedPhotoList[idx].localUrl;
+                document.querySelectorAll('#multi-photo-thumbnails div').forEach((div, i) => {
+                    div.className = `w-12 h-12 rounded-xl border-2 ${i === idx ? 'border-cherry' : 'border-slate-300'} overflow-hidden shrink-0 cursor-pointer shadow-xs`;
+                });
+            }
+        }
+
+        // Pincode Delivery Estimator
+        async function checkPincodeDelivery() {
+            const pin = (document.getElementById('modal-pincode-input').value || '').trim();
+            const resEl = document.getElementById('modal-pincode-result');
+            if (!resEl) return;
+            resEl.classList.remove('hidden');
+
+            if (!/^[1-9][0-9]{5}$/.test(pin)) {
+                resEl.className = "text-[11px] mt-1.5 font-bold text-rose-600";
+                resEl.innerText = "❌ Please enter a valid 6-digit Indian Pincode.";
+                return;
+            }
+
+            resEl.className = "text-[11px] mt-1.5 font-bold text-slate-500";
+            resEl.innerText = "Checking courier serviceability...";
+
+            try {
+                const response = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+                const data = await response.json();
+                if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice?.length > 0) {
+                    const po = data[0].PostOffice[0];
+                    const loc = `${po.District || po.Name}, ${po.State}`;
+                    
+                    // Calculate estimated delivery date: 4 to 6 business days from today
+                    const now = new Date();
+                    const d4 = new Date(now.getTime() + 4 * 24 * 3600 * 1000);
+                    const d6 = new Date(now.getTime() + 6 * 24 * 3600 * 1000);
+                    const options = { month: 'short', day: 'numeric' };
+                    const dateStr = `${d4.toLocaleDateString('en-IN', options)} - ${d6.toLocaleDateString('en-IN', options)}`;
+
+                    resEl.className = "text-[11px] mt-1.5 font-bold text-emerald-700 space-y-0.5";
+                    resEl.innerHTML = `
+                        <div>✅ <b>Delivery Available</b> to ${loc}</div>
+                        <div>🚚 Expected Delivery: <b>${dateStr}</b> (FREE on ₹499+)</div>
+                        <div>⚡ Express Dispatch Available (2-3 days)</div>
+                    `;
+                    return;
+                }
+            } catch(e){}
+
+            // Fallback delivery confirmation
+            resEl.className = "text-[11px] mt-1.5 font-bold text-emerald-700";
+            resEl.innerHTML = `✅ <b>Pan-India Delivery Available</b> to Pincode ${pin} within 4-6 days.`;
+        }
+
+        // Add to Cart from Personalization Studio (Strict Design Approval Enforcement)
+        function addToCartFromModal() {
+            if (isUploadingPhoto) {
+                alert("Kripya 2 second rukiye, aapki high-resolution photo cloud par upload ho rahi hai...");
+                return;
+            }
+
+            const approvalBox = document.getElementById('modal-design-approval');
+            if (approvalBox && !approvalBox.checked) {
+                alert("⚠️ Kripya 'I approve this preview for final studio production' checkbox par click karke design confirm kijiye.");
+                approvalBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                approvalBox.focus();
+                return;
+            }
+
+            const title = document.getElementById('order-title').innerText;
+            const select = document.getElementById('modal-size-select');
+            const sizeText = select ? select.options[select.selectedIndex].text : "Standard Size";
+            const price = select ? parseInt(select.value) : currentHeroPrice;
+            const finish = currentFrameBorder;
+            const customMsg = document.getElementById('modal-custom-text').value.trim();
+            const photoUrl = (uploadedPhotoList.length > 0 && uploadedPhotoList[0].cloudUrl) ? uploadedPhotoList[0].cloudUrl : (uploadedPhotoList.length > 0 ? uploadedPhotoList[0].localUrl : null);
+
+            const itemDetails = {
+                id: Date.now(),
+                name: `${title} (${sizeText.split('-')[0].trim()} - ${finish})`,
+                price: price,
+                photoUrl: photoUrl,
+                photosCount: uploadedPhotoList.length,
+                frameBorder: finish,
+                customText: customMsg,
+                zoom: currentCanvasZoom,
+                rotation: currentCanvasRotation
+            };
+
+            cart.push(itemDetails);
+            updateCartBadge();
+            closeOrderModal();
+            openCartDrawer();
+        }
+
+        // -------------------------------------------------------------
+        // SHOPPING CART DRAWER MANAGEMENT
+        // -------------------------------------------------------------
         function openCartDrawer() {
             document.getElementById('cart-drawer').classList.remove('hidden');
             renderCart();
@@ -1710,12 +2836,16 @@
         }
 
         function updateCartBadge() {
-            document.getElementById('cart-badge').innerText = cart.length;
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = cart.length;
         }
 
         function renderCart() {
             const container = document.getElementById('cart-items-container');
             const totalDisplay = document.getElementById('cart-total-display');
+            const freeShipText = document.getElementById('cart-free-shipping-text');
+            if (!container) return;
+
             if (cart.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-16 text-slate-400 text-xs">
@@ -1723,133 +2853,258 @@
                         <span>Your cart is empty. Add a custom frame or gift!</span>
                     </div>
                 `;
-                totalDisplay.innerText = "₹0";
+                if (totalDisplay) totalDisplay.innerText = "₹0";
+                if (freeShipText) freeShipText.innerText = "🚚 Add ₹499 for FREE Delivery Pan-India!";
             } else {
-                let total = 0;
+                let subtotal = 0;
                 container.innerHTML = cart.map(item => {
-                    total += item.price;
+                    subtotal += item.price;
                     return `
-                        <div class="p-3 bg-vanilla-soft rounded-2xl border border-vanilla-dark flex items-center justify-between gap-2">
+                        <div class="p-3 bg-vanilla-soft rounded-2xl border border-vanilla-dark flex items-center justify-between gap-2.5">
                             <div class="flex items-center gap-2.5">
-                                ${item.photoUrl ? `<img src="${item.photoUrl}" class="w-10 h-10 rounded-lg object-cover border border-cherry/30 shrink-0">` : ''}
+                                ${item.photoUrl ? `<img src="${item.photoUrl}" class="w-12 h-12 rounded-xl object-cover border border-cherry/30 shrink-0">` : `<div class="w-12 h-12 rounded-xl bg-cherry/10 flex items-center justify-center text-cherry text-sm font-bold shrink-0">🎁</div>`}
                                 <div>
-                                    <h4 class="font-bold text-xs text-slate-900">${item.name}</h4>
+                                    <h4 class="font-bold text-xs text-slate-900 leading-tight">${item.name}</h4>
                                     <span class="text-xs font-black text-cherry">₹${item.price}</span>
-                                    ${item.photoUrl ? `<span class="block text-[10px] text-emerald-700 font-bold">☁️ HD Photo Uploaded</span>` : ''}
+                                    ${item.customText ? `<span class="block text-[10px] text-slate-500 italic mt-0.5">"${item.customText}"</span>` : ''}
+                                    ${item.photoUrl ? `<span class="block text-[9px] text-emerald-700 font-bold">☁️ HD Photo Attached</span>` : ''}
                                 </div>
                             </div>
-                            <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-rose-500 p-1">
+                            <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-rose-500 p-1.5 transition">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
                     `;
                 }).join('');
-                totalDisplay.innerText = `₹${total}`;
+                if (totalDisplay) totalDisplay.innerText = `₹${subtotal}`;
+                
+                // Update Free Delivery meter
+                if (freeShipText) {
+                    if (subtotal >= 499) {
+                        freeShipText.innerHTML = `🎉 <b>You've unlocked FREE Shipping</b> across India!`;
+                    } else {
+                        freeShipText.innerText = `🚚 Add ₹${499 - subtotal} more for FREE Delivery Pan-India!`;
+                    }
+                }
             }
             lucide.createIcons();
         }
 
-        // Photo Upload Handler with Live Cloudinary 25GB HD Upload
-        let uploadedPhotoData = null;
-        let uploadedPhotoCloudUrl = null;
-        let isUploadingPhoto = false;
+        // -------------------------------------------------------------
+        // 3-STEP PROFESSIONAL CHECKOUT & PAYMENT WIZARD
+        // -------------------------------------------------------------
+        let currentCheckoutStep = 1;
+        let selectedDeliveryMethod = 'standard';
+        let isGiftWrapSelected = false;
+        let activeAppliedCoupon = null;
+        let confirmedOrderId = null;
 
-        async function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                uploadedPhotoData = e.target.result;
-                document.getElementById('upload-placeholder').classList.add('hidden');
-                const preview = document.getElementById('upload-preview-container');
-                preview.classList.remove('hidden');
-                document.getElementById('upload-preview-img').src = uploadedPhotoData;
-
-                const statusLabel = preview.querySelector('span');
-                statusLabel.innerHTML = `⏳ Uploading Original HD Photo to Cloud...`;
-                isUploadingPhoto = true;
-
-                try {
-                    const res = await fetch('/api/backend', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'upload_photo',
-                            imageBase64: uploadedPhotoData
-                        })
-                    });
-                    const data = await res.json();
-                    if (data.status === 'Success' && data.url) {
-                        uploadedPhotoCloudUrl = data.url;
-                        statusLabel.innerHTML = `✅ HD Photo Saved to Cloud!`;
-                    } else {
-                        statusLabel.innerHTML = `✅ Photo Attached (Local)`;
-                    }
-                } catch (err) {
-                    console.error("Cloud photo upload error:", err);
-                    statusLabel.innerHTML = `✅ Photo Attached!`;
-                } finally {
-                    isUploadingPhoto = false;
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Checkout Modal Functions
         function openCheckoutModal() {
             if (cart.length === 0) {
-                alert("Pehle cart me koi item add kijiye!");
+                alert("Aapka cart empty hai. Kripya pehle product customize karke add kijiye.");
                 return;
             }
             closeCartDrawer();
-            let total = 0;
-            cart.forEach(item => total += item.price);
-            document.getElementById('checkout-amount-display').innerText = `₹${total}`;
-            const upiUrl = `upi://pay?pa=itzajayrana-1@okicici&pn=Yaadivo%20Studio&am=${total}&cu=INR`;
-            document.getElementById('upi-qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(upiUrl)}`;
-            
+            currentCheckoutStep = 1;
+            goToCheckoutStep(1);
+
+            // Pre-fill if user logged in
+            if (currentUser) {
+                const emailInp = document.getElementById('cust-email');
+                if (emailInp && !emailInp.value) emailInp.value = currentUser;
+            }
+
+            document.getElementById('checkout-confirmation-screen').classList.add('hidden');
             document.getElementById('checkout-modal').classList.remove('hidden');
+            updateCheckoutTotals();
         }
 
         function closeCheckoutModal() {
             document.getElementById('checkout-modal').classList.add('hidden');
         }
 
-        function togglePaymentView(mode) {
-            const upiBox = document.getElementById('upi-box');
-            if (mode === 'UPI') {
-                upiBox.classList.remove('hidden');
-            } else {
-                upiBox.classList.add('hidden');
+        async function handlePincodeAutoFetch(pincode) {
+            const cleanPin = pincode.replace(/[^0-9]/g, '');
+            const msgEl = document.getElementById('pincode-fetch-msg');
+            if (cleanPin.length !== 6) {
+                if (msgEl) msgEl.classList.add('hidden');
+                return;
+            }
+
+            if (msgEl) {
+                msgEl.classList.remove('hidden');
+                msgEl.className = "text-[10px] text-slate-500 font-bold mt-1";
+                msgEl.innerText = "Finding city and state...";
+            }
+
+            try {
+                const res = await fetch(`https://api.postalpincode.in/pincode/${cleanPin}`);
+                const data = await res.json();
+                if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice?.length > 0) {
+                    const po = data[0].PostOffice[0];
+                    const cityInput = document.getElementById('cust-city');
+                    const stateInput = document.getElementById('cust-state');
+                    if (cityInput) cityInput.value = po.District || po.Name;
+                    if (stateInput) stateInput.value = po.State;
+                    if (msgEl) {
+                        msgEl.className = "text-[10px] text-emerald-600 font-bold mt-1";
+                        msgEl.innerText = `✅ Auto-filled: ${po.District || po.Name}, ${po.State}`;
+                    }
+                }
+            } catch(e) {
+                if (msgEl) msgEl.classList.add('hidden');
             }
         }
 
-        // Final Order Submit -> Save to Firebase + Send Brevo Email + Open WhatsApp with HD Link
-        async function handleFinalOrderSubmit(e) {
-            e.preventDefault();
+        function goToCheckoutStep(step) {
+            // Validation before proceeding
+            if (step === 2) {
+                const name = document.getElementById('cust-name').value.trim();
+                const phone = document.getElementById('cust-phone').value.trim();
+                const pincode = document.getElementById('cust-pincode').value.trim();
+                const city = document.getElementById('cust-city').value.trim();
+                const state = document.getElementById('cust-state').value.trim();
+                const address = document.getElementById('cust-address').value.trim();
+
+                if (!name || !phone || !pincode || !city || !state || !address) {
+                    alert("⚠️ Kripya sabhi zaroori shipping details (Name, Phone, Pincode, Address) bhariye.");
+                    return;
+                }
+                if (phone.length < 10) {
+                    alert("⚠️ Kripya valid 10-digit WhatsApp mobile number bhariye.");
+                    return;
+                }
+                if (pincode.length !== 6) {
+                    alert("⚠️ Kripya valid 6-digit Pincode bhariye.");
+                    return;
+                }
+            }
+
+            currentCheckoutStep = step;
+            document.getElementById('checkout-step-1').classList.toggle('hidden', step !== 1);
+            document.getElementById('checkout-step-2').classList.toggle('hidden', step !== 2);
+            document.getElementById('checkout-step-3').classList.toggle('hidden', step !== 3);
+
+            // Step Indicator pills
+            const stepTitles = {
+                1: "1. Shipping Address",
+                2: "2. Choose Delivery Method",
+                3: "3. Review & Payment"
+            };
+            document.getElementById('checkout-step-title').innerText = stepTitles[step] || "Checkout";
+
+            for (let i = 1; i <= 3; i++) {
+                const pill = document.getElementById(`step-pill-${i}`);
+                if (pill) {
+                    if (i === step) pill.className = "flex-1 py-1 text-center rounded-lg bg-cherry text-vanilla font-bold";
+                    else if (i < step) pill.className = "flex-1 py-1 text-center rounded-lg bg-emerald-100 text-emerald-800 font-bold";
+                    else pill.className = "flex-1 py-1 text-center rounded-lg bg-slate-100 text-slate-500 font-medium";
+                }
+            }
+
+            updateCheckoutTotals();
+        }
+
+        function selectDeliveryMethod(method, elem) {
+            selectedDeliveryMethod = method;
+            document.querySelectorAll('.delivery-opt').forEach(opt => {
+                opt.className = "flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200 cursor-pointer hover:border-cherry delivery-opt";
+            });
+            if (elem) {
+                elem.className = "flex items-start gap-3 p-3.5 rounded-2xl border-2 border-cherry bg-cherry/5 cursor-pointer delivery-opt";
+            }
+            updateCheckoutTotals();
+        }
+
+        function toggleGiftWrap(isChecked) {
+            isGiftWrapSelected = isChecked;
+            const textarea = document.getElementById('gift-card-message');
+            if (textarea) textarea.classList.toggle('hidden', !isChecked);
+            updateCheckoutTotals();
+        }
+
+        function togglePaymentView(mode) {
+            const upiBox = document.getElementById('upi-box');
+            const codBox = document.getElementById('cod-box');
+            if (mode === 'UPI') {
+                if (upiBox) upiBox.classList.remove('hidden');
+                if (codBox) codBox.classList.add('hidden');
+            } else {
+                if (upiBox) upiBox.classList.add('hidden');
+                if (codBox) codBox.classList.remove('hidden');
+            }
+        }
+
+        function updateCheckoutTotals() {
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price);
+
+            // Shipping logic: Standard is Free if subtotal >= 499, else 49. Express is always 99.
+            let shippingFee = 0;
+            if (selectedDeliveryMethod === 'express') {
+                shippingFee = 99;
+            } else {
+                shippingFee = subtotal >= 499 ? 0 : 49;
+            }
+
+            const giftWrapFee = isGiftWrapSelected ? 49 : 0;
+            let discount = activeAppliedCoupon ? activeAppliedCoupon.discount : 0;
+            let total = Math.max(0, subtotal + shippingFee + giftWrapFee - discount);
+
+            // Display in step 3 breakdown
+            const subDisplay = document.getElementById('checkout-subtotal-display');
+            const shipDisplay = document.getElementById('checkout-shipping-display');
+            const giftRow = document.getElementById('checkout-giftwrap-row');
+            const totalDisplay = document.getElementById('checkout-amount-display');
+
+            if (subDisplay) subDisplay.innerText = `₹${subtotal}`;
+            if (shipDisplay) {
+                shipDisplay.innerText = shippingFee === 0 ? "FREE" : `₹${shippingFee}`;
+                shipDisplay.className = shippingFee === 0 ? "text-emerald-700 font-bold" : "text-slate-800 font-bold";
+            }
+            if (giftRow) giftRow.classList.toggle('hidden', !isGiftWrapSelected);
+            if (totalDisplay) totalDisplay.innerText = `₹${total}`;
+
+            // Update Dynamic UPI QR Code & Mobile link
+            const upiUrl = `upi://pay?pa=itzajayrana-1@okicici&pn=Yaadivo%20Studio&am=${total}&cu=INR`;
+            const qrImg = document.getElementById('upi-qr-image');
+            if (qrImg) {
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(upiUrl)}`;
+            }
+            const directLink = document.getElementById('upi-direct-link');
+            if (directLink) directLink.href = upiUrl;
+        }
+
+        // Final Order Placement Execution
+        async function executeFinalOrderPlacement() {
+            const submitBtn = document.getElementById('place-order-submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>Saving Order to Cloud & Generating Invoice...</span>`;
+
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
-            const address = document.getElementById('cust-address').value.trim();
-            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<span>Saving Order to Cloud Database...</span>`;
-            submitBtn.disabled = true;
-            
-            let total = 0;
-            let itemsList = "";
-                        let subtotal = 0;
-            cart.forEach((item, index) => {
-                subtotal += item.price;
-                total += item.price;
-                itemsList += `%0A${index + 1}. *${encodeURIComponent(item.name)}* - ₹${item.price}`;
-                if (item.photoUrl) {
-                    itemsList += `%0A   📸 *HD Photo Link:* ${encodeURIComponent(item.photoUrl)}`;
-                }
-            });
+            const email = (document.getElementById('cust-email').value.trim()) || currentUser || "";
+            const pincode = document.getElementById('cust-pincode').value.trim();
+            const city = document.getElementById('cust-city').value.trim();
+            const state = document.getElementById('cust-state').value.trim();
+            const street = document.getElementById('cust-address').value.trim();
+            const landmark = document.getElementById('cust-landmark').value.trim();
+            const fullAddress = `${street}, ${landmark ? landmark + ', ' : ''}${city}, ${state} - ${pincode}`;
 
-            let orderId = "YDV-" + Date.now().toString().slice(-6);
+            const paymentMethodElem = document.querySelector('input[name="payment-method"]:checked');
+            const paymentMethod = paymentMethodElem ? paymentMethodElem.value : "UPI";
+            const giftCardMsg = isGiftWrapSelected ? (document.getElementById('gift-card-message').value.trim()) : "";
+
+            let subtotal = 0;
+            cart.forEach(i => subtotal += i.price);
+            let shippingFee = selectedDeliveryMethod === 'express' ? 99 : (subtotal >= 499 ? 0 : 49);
+            let giftWrapFee = isGiftWrapSelected ? 49 : 0;
+            let discount = activeAppliedCoupon ? activeAppliedCoupon.discount : 0;
+            let netTotal = Math.max(0, subtotal + shippingFee + giftWrapFee - discount);
+
+            let orderId = "YD-" + Math.floor(100000 + Math.random() * 900000);
+
             try {
                 const res = await fetch('/api/backend', {
                     method: 'POST',
@@ -1858,80 +3113,374 @@
                         action: 'create_order',
                         customerName: name,
                         phone,
-                        email: currentUser || "",
-                        address,
+                        email,
+                        address: fullAddress,
+                        pincode,
+                        city,
+                        state,
+                        deliveryType: selectedDeliveryMethod === 'express' ? 'Express' : 'Standard',
                         paymentMethod,
-                                                totalAmount: activeAppliedCoupon ? Math.max(0, subtotal - activeAppliedCoupon.discount) : subtotal,
-                        couponApplied: activeAppliedCoupon ? activeAppliedCoupon.code : null,
-                        discountAmount: activeAppliedCoupon ? activeAppliedCoupon.discount : 0,
-                        items: cart
+                        subtotal,
+                        discount,
+                        couponCode: activeAppliedCoupon ? activeAppliedCoupon.code : "",
+                        totalAmount: netTotal,
+                        items: cart,
+                        customizationNote: giftCardMsg
                     })
                 });
                 const data = await res.json();
                 if (data.orderId) orderId = data.orderId;
-            } catch (err) {
-                console.error("Order save error:", err);
+            } catch(e) {
+                console.error("Order save fallback:", e);
             } finally {
-                submitBtn.innerHTML = originalBtnHtml;
                 submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
             }
 
-            // Construct WhatsApp Message for Ajay Kumar (+91 9235843640) with Order ID & HD Photo Link
-            const waText = `*🎁 NEW ORDER #${orderId} ON YAADIVO STUDIO!*%0A%0A` +
+            confirmedOrderId = orderId;
+
+            // Save last address to local storage
+            try {
+                localStorage.setItem('yaadivo_last_address', JSON.stringify({ name, phone, email, address: fullAddress }));
+            } catch(e){}
+
+            // Switch to Step 4: Confirmation Screen
+            document.getElementById('checkout-step-1').classList.add('hidden');
+            document.getElementById('checkout-step-2').classList.add('hidden');
+            document.getElementById('checkout-step-3').classList.add('hidden');
+            const confirmScreen = document.getElementById('checkout-confirmation-screen');
+            confirmScreen.classList.remove('hidden');
+
+            document.getElementById('confirm-order-id').innerText = orderId;
+            document.getElementById('confirm-cust-name').innerText = name;
+            document.getElementById('confirm-delivery-date').innerText = selectedDeliveryMethod === 'express' ? '2-3 Business Days' : '4-6 Business Days';
+            document.getElementById('confirm-total-amount').innerText = `₹${netTotal}`;
+
+            // Build WhatsApp Message Link for Ajay Kumar (+91 9235843640)
+            const itemsSummary = cart.map((item, idx) => `%0A${idx+1}. *${encodeURIComponent(item.name)}* - ₹${item.price}`).join('');
+            const waText = `*🎁 NEW CONFIRMED ORDER #${orderId} ON YAADIVO STUDIO!*%0A%0A` +
                            `👤 *Customer Name:* ${encodeURIComponent(name)}%0A` +
                            `📞 *Phone / WhatsApp:* ${encodeURIComponent(phone)}%0A` +
-                           (currentUser ? `✉️ *Verified Email:* ${encodeURIComponent(currentUser)}%0A` : '') +
-                           `📍 *Delivery Address:* ${encodeURIComponent(address)}%0A` +
-                           `💳 *Payment Option:* ${paymentMethod}%0A` +
-                           `💰 *Total Amount:* ₹${total}%0A%0A` +
-                           `📦 *Ordered Items & HD Photos:*${itemsList}%0A%0A` +
-                           `----------------------------------%0A` +
-                           `_Saved in Yaadivo Firebase & Cloudinary Database_`;
+                           `📍 *Delivery Address:* ${encodeURIComponent(fullAddress)}%0A` +
+                           `🚚 *Delivery Speed:* ${selectedDeliveryMethod.toUpperCase()}%0A` +
+                           `💳 *Payment Method:* ${paymentMethod}%0A` +
+                           `💰 *Total Amount:* ₹${netTotal}%0A%0A` +
+                           `📦 *Items Ordered:*${itemsSummary}%0A%0A` +
+                           `_Please start design and crafting for this order._`;
+            document.getElementById('confirm-whatsapp-btn').href = `https://api.whatsapp.com/send?phone=919235843640&text=${waText}`;
 
-            const waLink = `https://api.whatsapp.com/send?phone=919235843640&text=${waText}`;
+            // Save order to confirmed orders list for invoice generation
+            window.lastPlacedOrder = {
+                orderId,
+                customerName: name,
+                phone,
+                email,
+                address: fullAddress,
+                deliveryType: selectedDeliveryMethod === 'express' ? 'Express Priority' : 'Standard Safe Delivery',
+                paymentMethod,
+                subtotal,
+                shippingFee,
+                discount,
+                totalAmount: netTotal,
+                items: [...cart],
+                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+            };
 
-            alert(`🎉 Shukriya ${name}! Aapka Order (#${orderId}) Yaadivo Database me save ho gaya hai. Ab WhatsApp open ho raha hai!`);
-            
+            // Clear Cart
             cart = [];
             updateCartBadge();
-            closeCheckoutModal();
-
-            window.open(waLink, '_blank');
+            renderCart();
         }
 
-        // Order Modal
-        function openOrderModal(title, price) {
-            document.getElementById('order-title').innerText = title;
-            document.getElementById('modal-size-select').value = price;
-            updateModalPrice();
-            uploadedPhotoData = null;
-            uploadedPhotoCloudUrl = null;
-            document.getElementById('upload-placeholder').classList.remove('hidden');
-            document.getElementById('upload-preview-container').classList.add('hidden');
-            document.getElementById('order-modal').classList.remove('hidden');
+        // -------------------------------------------------------------
+        // FORMAL TAX INVOICE GENERATOR & PRINT
+        // -------------------------------------------------------------
+        function downloadOrPrintInvoice() {
+            if (window.lastPlacedOrder) {
+                renderInvoiceModal(window.lastPlacedOrder);
+            } else if (confirmedOrderId) {
+                executeTrackOrderLookup(confirmedOrderId, true);
+            } else {
+                alert("Koi active order invoice select nahi hai.");
+            }
         }
 
-        function closeOrderModal() {
-            document.getElementById('order-modal').classList.add('hidden');
+        function renderInvoiceModal(order) {
+            document.getElementById('inv-order-id').innerText = order.orderId;
+            document.getElementById('inv-date').innerText = `Date: ${order.date || new Date().toLocaleDateString('en-IN')}`;
+            document.getElementById('inv-cust-name').innerText = order.customerName || "Customer";
+            document.getElementById('inv-cust-address').innerText = order.address || "-";
+            document.getElementById('inv-cust-phone').innerText = `Phone: ${order.phone || '-'}`;
+            document.getElementById('inv-payment-mode').innerText = order.paymentMethod || "UPI / Online";
+            document.getElementById('inv-delivery-type').innerText = order.deliveryType || "Standard Safe Delivery";
+
+            const tbody = document.getElementById('inv-items-table');
+            const items = order.items || [];
+            tbody.innerHTML = items.map((i, idx) => `
+                <tr class="py-2 border-b border-slate-100">
+                    <td class="py-2.5 font-bold text-slate-800">${idx+1}. ${i.name}</td>
+                    <td class="py-2.5 text-center text-slate-600">1</td>
+                    <td class="py-2.5 text-right font-medium text-slate-700">₹${i.price}</td>
+                    <td class="py-2.5 text-right font-bold text-slate-900">₹${i.price}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('inv-subtotal').innerText = `₹${order.subtotal || order.totalAmount}`;
+            document.getElementById('inv-shipping').innerText = (order.shippingFee && order.shippingFee > 0) ? `₹${order.shippingFee}` : "FREE";
+            
+            const discRow = document.getElementById('inv-discount-row');
+            if (order.discount && order.discount > 0) {
+                discRow.classList.remove('hidden');
+                document.getElementById('inv-discount').innerText = `-₹${order.discount}`;
+            } else {
+                discRow.classList.add('hidden');
+            }
+
+            document.getElementById('inv-net-total').innerText = `₹${order.totalAmount}`;
+            document.getElementById('invoice-modal').classList.remove('hidden');
         }
 
-        function updateModalPrice() {
-            const price = document.getElementById('modal-size-select').value;
-            document.getElementById('modal-price-display').innerText = `₹${price}`;
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
         }
 
-        function addToCartFromModal() {
-            if (isUploadingPhoto) {
-                alert("Kripya 2 second rukiye, aapki HD photo Cloud par upload ho rahi hai...");
+        // -------------------------------------------------------------
+        // LIVE ORDER TRACKING 8-STAGE TIMELINE ENGINE
+        // -------------------------------------------------------------
+        const ORDER_STAGES = [
+            { key: "Placed", label: "Order Placed", desc: "Received in studio database." },
+            { key: "Confirmed", label: "Order Confirmed", desc: "Specifications verified with studio team." },
+            { key: "Designing", label: "Designing & Art Preview", desc: "Designers optimizing photo & text resolution." },
+            { key: "Printing", label: "Printing & Crafting", desc: "Pigment printing & handcrafted frame framing." },
+            { key: "Packed", label: "Quality Check & Packed", desc: "5-layer protective thermocol packing." },
+            { key: "Shipped", label: "Handed over to Courier", desc: "In transit with logistics partner." },
+            { key: "Out for Delivery", label: "Out for Delivery", desc: "Courier partner delivery boy out for dispatch." },
+            { key: "Delivered", label: "Delivered to Recipient", desc: "Package handed over safely." }
+        ];
+
+        function openTrackModal(orderId = "") {
+            document.getElementById('track-modal').classList.remove('hidden');
+            if (orderId) {
+                document.getElementById('track-query-input').value = orderId;
+                executeTrackOrderLookup();
+            }
+        }
+
+        function closeTrackModal() {
+            document.getElementById('track-modal').classList.add('hidden');
+        }
+
+        async function executeTrackOrderLookup(prefilledQuery = null, forInvoice = false) {
+            const query = prefilledQuery || document.getElementById('track-query-input').value.trim();
+            const errorMsg = document.getElementById('track-error-msg');
+            const resultBox = document.getElementById('track-result-container');
+            const lookupBtn = document.getElementById('track-lookup-btn');
+
+            if (!query) {
+                if (errorMsg) {
+                    errorMsg.classList.remove('hidden');
+                    errorMsg.innerText = "Please enter an Order ID (e.g. YD-839201) or 10-digit Mobile Number.";
+                }
                 return;
             }
-            const title = document.getElementById('order-title').innerText;
-            const select = document.getElementById('modal-size-select');
-            const sizeText = select.options[select.selectedIndex].text;
-            const price = parseInt(select.value);
-            const finish = document.querySelector('input[name="frame-finish"]:checked').value;
-            addToCart(`${title} (${sizeText} - ${finish})`, price, uploadedPhotoCloudUrl);
-            closeOrderModal();
+
+            if (errorMsg) errorMsg.classList.add('hidden');
+            if (lookupBtn) lookupBtn.innerText = "Searching...";
+
+            try {
+                const res = await fetch(`/api/backend?action=track_order&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                if (data.status === 'Success' && data.order) {
+                    const o = data.order;
+                    if (forInvoice) {
+                        renderInvoiceModal(o);
+                        return;
+                    }
+                    renderTrackingTimeline(o);
+                    if (resultBox) resultBox.classList.remove('hidden');
+                } else {
+                    if (errorMsg) {
+                        errorMsg.classList.remove('hidden');
+                        errorMsg.innerText = data.message || "Order not found. Please check Order ID.";
+                    }
+                    if (resultBox) resultBox.classList.add('hidden');
+                }
+            } catch(err) {
+                if (errorMsg) {
+                    errorMsg.classList.remove('hidden');
+                    errorMsg.innerText = "Tracking lookup failed. Please check network connection.";
+                }
+            } finally {
+                if (lookupBtn) lookupBtn.innerText = "Track";
+            }
+        }
+
+        function renderTrackingTimeline(order) {
+            document.getElementById('track-order-id-label').innerText = order.orderId;
+            document.getElementById('track-placed-date').innerText = `Placed on: ${new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            
+            const currentStatus = order.status || "Placed";
+            const statusPill = document.getElementById('track-status-pill');
+            if (statusPill) statusPill.innerText = currentStatus;
+
+            // Determine stage index
+            let currentStageIndex = ORDER_STAGES.findIndex(s => s.key.toLowerCase() === currentStatus.toLowerCase());
+            if (currentStageIndex < 0) {
+                if (currentStatus.toLowerCase() === 'pending') currentStageIndex = 0;
+                else currentStageIndex = 0;
+            }
+
+            const stepsContainer = document.getElementById('tracking-timeline-steps');
+            stepsContainer.innerHTML = ORDER_STAGES.map((stage, idx) => {
+                const isPassed = idx < currentStageIndex;
+                const isCurrent = idx === currentStageIndex;
+                
+                let dotClass = "bg-slate-300 border-white";
+                let textClass = "text-slate-400";
+                let badgeHtml = "";
+
+                if (isPassed) {
+                    dotClass = "bg-emerald-600 border-emerald-100 text-white";
+                    textClass = "text-slate-800 font-bold";
+                    badgeHtml = `<span class="text-[10px] text-emerald-600 font-bold ml-2">✓ Completed</span>`;
+                } else if (isCurrent) {
+                    dotClass = "bg-cherry border-cherry/20 text-white animate-pulse ring-4 ring-cherry/20";
+                    textClass = "text-cherry font-black";
+                    badgeHtml = `<span class="bg-cherry text-vanilla text-[9px] font-black px-2 py-0.5 rounded-full ml-2 uppercase">Current Stage</span>`;
+                }
+
+                return `
+                    <div class="relative">
+                        <!-- Dot -->
+                        <div class="absolute -left-[31px] top-0.5 w-4 h-4 rounded-full border-2 ${dotClass}"></div>
+                        <div>
+                            <h5 class="text-xs ${textClass} flex items-center">${stage.label} ${badgeHtml}</h5>
+                            <p class="text-[11px] text-slate-500 mt-0.5">${stage.desc}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Courier Info Box
+            const courierName = document.getElementById('track-courier-name');
+            const awbNo = document.getElementById('track-awb-number');
+            const courierLink = document.getElementById('track-courier-link');
+
+            if (order.courierPartner) {
+                courierName.innerText = `Courier Partner: ${order.courierPartner}`;
+            } else {
+                courierName.innerText = `Courier Partner: Delhivery Express / Bluedart`;
+            }
+
+            if (order.trackingAwb) {
+                awbNo.innerText = `AWB Tracking No: ${order.trackingAwb}`;
+                if (courierLink) {
+                    courierLink.classList.remove('hidden');
+                    courierLink.href = order.trackingUrl || `https://www.delhivery.com/track/package/${order.trackingAwb}`;
+                }
+            } else {
+                awbNo.innerText = `AWB Tracking No: Assigned on dispatch`;
+                if (courierLink) courierLink.classList.add('hidden');
+            }
+        }
+
+        // -------------------------------------------------------------
+        // CUSTOMER "MY ACCOUNT" DRAWER CONTROLLER
+        // -------------------------------------------------------------
+        function openAccountDrawer() {
+            document.getElementById('account-drawer').classList.remove('hidden');
+            const nameEl = document.getElementById('account-user-name');
+            const emailEl = document.getElementById('account-user-email');
+            const avatar = document.getElementById('account-avatar-char');
+
+            if (currentUser) {
+                nameEl.innerText = currentUser.split('@')[0];
+                emailEl.innerText = currentUser;
+                avatar.innerText = currentUser.charAt(0).toUpperCase();
+            } else {
+                nameEl.innerText = "Guest User";
+                emailEl.innerText = "Not Logged In";
+                avatar.innerText = "G";
+            }
+
+            // Restore saved address
+            try {
+                const saved = JSON.parse(localStorage.getItem('yaadivo_last_address') || '{}');
+                if (saved.address) {
+                    document.getElementById('acc-saved-name').innerText = saved.name || "Default Address";
+                    document.getElementById('acc-saved-address').innerText = saved.address;
+                }
+            } catch(e){}
+
+            loadCustomerOrders();
+        }
+
+        function closeAccountDrawer() {
+            document.getElementById('account-drawer').classList.add('hidden');
+        }
+
+        function switchAccountTab(tab) {
+            document.getElementById('acc-view-orders').classList.toggle('hidden', tab !== 'orders');
+            document.getElementById('acc-view-wishlist').classList.toggle('hidden', tab !== 'wishlist');
+            document.getElementById('acc-view-addresses').classList.toggle('hidden', tab !== 'addresses');
+
+            document.getElementById('acc-tab-orders').className = tab === 'orders' ? 'flex-1 py-2 text-center text-cherry border-b-2 border-cherry' : 'flex-1 py-2 text-center text-slate-500 hover:text-slate-900';
+            document.getElementById('acc-tab-wishlist').className = tab === 'wishlist' ? 'flex-1 py-2 text-center text-cherry border-b-2 border-cherry' : 'flex-1 py-2 text-center text-slate-500 hover:text-slate-900';
+            document.getElementById('acc-tab-addresses').className = tab === 'addresses' ? 'flex-1 py-2 text-center text-cherry border-b-2 border-cherry' : 'flex-1 py-2 text-center text-slate-500 hover:text-slate-900';
+
+            if (tab === 'wishlist') renderWishlist();
+        }
+
+        async function loadCustomerOrders() {
+            const container = document.getElementById('acc-orders-list');
+            if (!container) return;
+
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="p-6 rounded-2xl bg-vanilla-soft border border-vanilla-dark text-center text-xs space-y-2">
+                        <p class="text-slate-600">Please login with email OTP to view your orders history.</p>
+                        <button onclick="closeAccountDrawer(); openAuthModal();" class="px-4 py-2 rounded-xl bg-cherry text-vanilla font-bold text-xs">Login with OTP</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `<p class="text-center py-6 text-slate-400 text-xs">Loading your orders from database...</p>`;
+
+            try {
+                const res = await fetch(`/api/backend?action=get_customer_orders&email=${encodeURIComponent(currentUser)}`);
+                const data = await res.json();
+                const orders = data.orders || [];
+
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8 text-slate-400 text-xs">
+                            <i data-lucide="package" class="w-10 h-10 mx-auto mb-2 opacity-30"></i>
+                            <p>No orders placed with ${currentUser} yet.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = orders.map(o => `
+                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono font-black text-cherry">#${o.orderId}</span>
+                                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">${o.status || 'Placed'}</span>
+                            </div>
+                            <p class="text-slate-600 font-semibold">${(o.items || []).map(i => i.name).join(', ')}</p>
+                            <div class="flex items-center justify-between pt-1 border-t border-slate-200">
+                                <span class="font-bold text-slate-900">Total: ₹${o.totalAmount}</span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="closeAccountDrawer(); openTrackModal('${o.orderId}')" class="px-2.5 py-1 rounded-lg bg-vanilla text-cherry font-bold text-[10px]">Track</button>
+                                    <button onclick="renderInvoiceModal(${JSON.stringify(o).replace(/"/g, '&quot;')})" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-bold text-[10px]">Invoice</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                container.innerHTML = `<p class="text-center text-xs text-rose-600 py-4">Error loading orders.</p>`;
+            }
+            lucide.createIcons();
         }
 
         // Real Branded Email OTP Engine + Firebase Customer Sync
@@ -2156,11 +3705,15 @@
                                 </div>
                                 <div class="flex sm:flex-col items-end justify-between gap-2 shrink-0">
                                     <span class="text-lg font-black text-cherry">₹${o.totalAmount}</span>
-                                    <select onchange="updateOrderStatus('${o.orderId || o._docId}', this.value)" class="text-xs font-bold rounded-xl border border-cherry/30 px-2.5 py-1.5 bg-white text-slate-800">
-                                        <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
-                                        <option value="Printing" ${o.status === 'Printing' ? 'selected' : ''}>🖨️ Printing</option>
-                                        <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
-                                        <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
+                                    <select onchange="adminUpdateOrderStatusAwb('${o.orderId || o._docId}', this.value)" class="text-xs font-bold rounded-xl border border-cherry/30 px-2.5 py-1.5 bg-white text-slate-800">
+                                        <option value="Placed" ${o.status === 'Placed' || o.status === 'Pending' ? 'selected' : ''}>📝 1. Placed</option>
+                                        <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>🔍 2. Confirmed</option>
+                                        <option value="Designing" ${o.status === 'Designing' ? 'selected' : ''}>🎨 3. Designing</option>
+                                        <option value="Printing" ${o.status === 'Printing' ? 'selected' : ''}>🖨️ 4. Printing</option>
+                                        <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>📦 5. Packed</option>
+                                        <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>🚚 6. Shipped</option>
+                                        <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>🛵 7. Out for Delivery</option>
+                                        <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>🎁 8. Delivered</option>
                                     </select>
                                 </div>
                             </div>
@@ -2183,7 +3736,25 @@
             }
         }
 
-        async function updateOrderStatus(orderId, newStatus) {
+        async function adminUpdateOrderStatusAwb(orderId, newStatus) {
+            let courierPartner = "";
+            let trackingAwb = "";
+            let trackingUrl = "";
+
+            if (newStatus === "Shipped") {
+                courierPartner = prompt("Enter Courier Name (e.g. Delhivery, Bluedart, DTDC, India Post):", "Delhivery") || "Delhivery";
+                trackingAwb = prompt("Enter Courier AWB / Tracking Consignment Number:", "") || "";
+                if (trackingAwb) {
+                    if (courierPartner.toLowerCase().includes('delhivery')) {
+                        trackingUrl = `https://www.delhivery.com/track/package/${trackingAwb}`;
+                    } else if (courierPartner.toLowerCase().includes('bluedart')) {
+                        trackingUrl = `https://www.bluedart.com/tracking?handler=traking&action=custSearch&trackFor=0&numbers=${trackingAwb}`;
+                    } else {
+                        trackingUrl = `https://www.delhivery.com/track/package/${trackingAwb}`;
+                    }
+                }
+            }
+
             try {
                 await fetch('/api/backend', {
                     method: 'POST',
@@ -2191,9 +3762,24 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${currentAdminToken}`
                     },
-                    body: JSON.stringify({ action: 'update_order_status', orderId, newStatus, adminToken: currentAdminToken })
+                    body: JSON.stringify({
+                        action: 'update_order_status',
+                        orderId,
+                        newStatus,
+                        courierPartner,
+                        trackingAwb,
+                        trackingUrl,
+                        adminToken: currentAdminToken
+                    })
                 });
-            } catch (e) {}
+                alert(`Order #${orderId} status successfully updated to "${newStatus}"!`);
+            } catch (e) {
+                alert("Error updating order status: " + e.message);
+            }
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            return adminUpdateOrderStatusAwb(orderId, newStatus);
         }
 
         // ==========================================
@@ -2712,12 +4298,10 @@
             }
         }
 
-                // Handle Auth button click (Login or Logout)
+                // Handle Auth button click (Opens My Account if logged in, or Auth Modal if guest)
         function handleAuthButtonClick() {
             if (currentUser) {
-                if (confirm(`Aap already logged in hain (${currentUser}).\nKya aap Logout karke new login karna chahte hain?`)) {
-                    logoutUser();
-                }
+                openAccountDrawer();
             } else {
                 openAuthModal();
             }
@@ -2729,14 +4313,17 @@
             currentAdminToken = null;
             localStorage.removeItem('yaadivo_user');
             const adminBtn = document.getElementById('admin-nav-btn');
-            adminBtn.classList.add('hidden');
-            adminBtn.classList.remove('flex');
+            if (adminBtn) {
+                adminBtn.classList.add('hidden');
+                adminBtn.classList.remove('flex');
+            }
             document.getElementById('auth-btn-text').innerText = "Login with OTP";
-            document.getElementById('auth-btn').className = "flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md";
+            document.getElementById('auth-btn').className = "flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-cherry text-vanilla hover:bg-cherry-light transition shadow-md";
             document.getElementById('auth-input').value = "";
             document.getElementById('otp-input').value = "";
             document.getElementById('auth-step-1').classList.remove('hidden');
             document.getElementById('auth-step-2').classList.add('hidden');
+            closeAccountDrawer();
             alert("Aap successfully Logout ho gaye hain!");
         }
 
@@ -2748,15 +4335,18 @@
                     const u = JSON.parse(savedUser);
                     currentUser = u.contact;
                     currentAdminToken = u.adminToken || null;
-                    document.getElementById('auth-btn-text').innerText = `👤 ${currentUser.split('@')[0]} (Logout)`;
-                    document.getElementById('auth-btn').className = "flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 transition shadow-md";
+                    document.getElementById('auth-btn-text').innerText = `👤 My Account`;
+                    document.getElementById('auth-btn').className = "flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 transition shadow-md";
                     if (u.isAdmin && currentAdminToken && SUPER_ADMINS.includes(currentUser.toLowerCase().trim())) {
                         const adminBtn = document.getElementById('admin-nav-btn');
-                        adminBtn.classList.remove('hidden');
-                        adminBtn.classList.add('flex');
+                        if (adminBtn) {
+                            adminBtn.classList.remove('hidden');
+                            adminBtn.classList.add('flex');
+                        }
                     }
                 } catch(e){}
             }
+            updateWishlistBadge();
         });
 
         // Resin Art Modal

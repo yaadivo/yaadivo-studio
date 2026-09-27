@@ -200,8 +200,24 @@ export default async function handler(req, res) {
     // 3. CREATE NEW ORDER IN FIREBASE + SEND EMAIL INVOICE
     // ====================================================
     if (action === "create_order") {
-      const { customerName, phone, email, address, paymentMethod, totalAmount, items } = body;
-      const orderId = "YDV-" + Date.now().toString().slice(-6);
+      const {
+        customerName,
+        phone,
+        email,
+        address,
+        pincode,
+        city,
+        state,
+        deliveryType,
+        paymentMethod,
+        subtotal,
+        discount,
+        couponCode,
+        totalAmount,
+        items,
+        customizationNote
+      } = body;
+      const orderId = "YD-" + Math.floor(100000 + Math.random() * 900000);
       const createdAt = new Date().toISOString();
 
       const photoUrls = (items || []).map(i => i.photoUrl).filter(Boolean);
@@ -212,11 +228,23 @@ export default async function handler(req, res) {
         phone: phone || "",
         email: email || "",
         address: address || "",
+        pincode: pincode || "",
+        city: city || "",
+        state: state || "",
+        deliveryType: deliveryType || "Standard",
         paymentMethod: paymentMethod || "UPI",
+        subtotal: Number(subtotal || totalAmount || 0),
+        discount: Number(discount || 0),
+        couponCode: couponCode || "",
         totalAmount: Number(totalAmount || 0),
         items: items || [],
         photoUrls,
-        status: "Pending",
+        customizationNote: customizationNote || "",
+        status: "Placed",
+        courierPartner: "",
+        trackingAwb: "",
+        trackingUrl: "",
+        estimatedDelivery: deliveryType === "Express" ? "2-3 business days" : "4-6 business days",
         createdAt
       };
 
@@ -355,23 +383,133 @@ export default async function handler(req, res) {
         return res.status(403).json({ status: "Error", message: "Unauthorized" });
       }
 
-      const { orderId, newStatus } = body;
+      const { orderId, newStatus, courierPartner, trackingAwb, trackingUrl } = body;
       if (!orderId || !newStatus) {
         return res.status(400).json({ status: "Error", message: "Missing orderId or newStatus" });
       }
 
-      const patchUrl = `${FIRESTORE_BASE}/orders/${encodeURIComponent(orderId)}?updateMask.fieldPaths=status`;
-      const patchRes = await fetch(patchUrl, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            status: { stringValue: newStatus }
-          }
-        })
+      // 1. Update Firestore
+      try {
+        const patchMasks = ["status"];
+        const patchFields = { status: { stringValue: newStatus } };
+        if (courierPartner !== undefined) {
+          patchMasks.push("courierPartner");
+          patchFields.courierPartner = { stringValue: courierPartner || "" };
+        }
+        if (trackingAwb !== undefined) {
+          patchMasks.push("trackingAwb");
+          patchFields.trackingAwb = { stringValue: trackingAwb || "" };
+        }
+        if (trackingUrl !== undefined) {
+          patchMasks.push("trackingUrl");
+          patchFields.trackingUrl = { stringValue: trackingUrl || "" };
+        }
+
+        const maskQuery = patchMasks.map(m => `updateMask.fieldPaths=${encodeURIComponent(m)}`).join('&');
+        const patchUrl = `${FIRESTORE_BASE}/orders/${encodeURIComponent(orderId)}?${maskQuery}`;
+        await fetch(patchUrl, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: patchFields })
+        });
+      } catch (e) {
+        console.error("Firestore patch error:", e);
+      }
+
+      // 2. Update Cloudinary DB Mirror
+      try {
+        const existingOrders = await readCloudinaryDb("orders");
+        const idx = existingOrders.findIndex(o => o.orderId === orderId);
+        if (idx >= 0) {
+          existingOrders[idx].status = newStatus;
+          if (courierPartner !== undefined) existingOrders[idx].courierPartner = courierPartner;
+          if (trackingAwb !== undefined) existingOrders[idx].trackingAwb = trackingAwb;
+          if (trackingUrl !== undefined) existingOrders[idx].trackingUrl = trackingUrl;
+          await writeCloudinaryDb("orders", existingOrders);
+        }
+      } catch (e) {
+        console.error("Cloudinary DB mirror update error:", e);
+      }
+
+      return res.status(200).json({ status: "Success", orderId, newStatus, courierPartner, trackingAwb });
+    }
+
+    // ====================================================
+    // 5B. LIVE ORDER TRACKING (PUBLIC)
+    // ====================================================
+    if (action === "track_order") {
+      const query = (body.query || req.query.query || '').trim();
+      if (!query) {
+        return res.status(400).json({ status: "Error", message: "Order ID or Mobile Number is required." });
+      }
+
+      let allOrders = [];
+      try {
+        const fsRes = await fetch(`${FIRESTORE_BASE}/orders?pageSize=100`);
+        if (fsRes.ok) {
+          const fsData = await fsRes.json();
+          allOrders = (fsData.documents || []).map(fromFirestoreDoc).filter(Boolean);
+        }
+      } catch (e) {}
+
+      if (allOrders.length === 0) {
+        allOrders = await readCloudinaryDb("orders");
+      }
+
+      const qLower = query.toLowerCase();
+      const cleanDigits = query.replace(/[^0-9]/g, '');
+
+      const matched = allOrders.filter(o => {
+        const orderIdMatch = o.orderId && o.orderId.toLowerCase() === qLower;
+        const phoneMatch = cleanDigits.length >= 6 && o.phone && o.phone.replace(/[^0-9]/g, '').endsWith(cleanDigits);
+        return orderIdMatch || phoneMatch;
       });
 
-      return res.status(200).json({ status: "Success", orderId, newStatus });
+      if (matched.length === 0) {
+        return res.status(404).json({ status: "Error", message: `No order found matching "${query}". Please check your Order ID or registered 10-digit mobile number.` });
+      }
+
+      return res.status(200).json({
+        status: "Success",
+        order: matched[0],
+        orders: matched
+      });
+    }
+
+    // ====================================================
+    // 5C. GET CUSTOMER ORDERS (BY EMAIL OR PHONE)
+    // ====================================================
+    if (action === "get_customer_orders") {
+      const email = (body.email || req.query.email || '').toLowerCase().trim();
+      const phone = (body.phone || req.query.phone || '').replace(/[^0-9]/g, '');
+
+      if (!email && !phone) {
+        return res.status(400).json({ status: "Error", message: "Email or phone number is required." });
+      }
+
+      let allOrders = [];
+      try {
+        const fsRes = await fetch(`${FIRESTORE_BASE}/orders?pageSize=100`);
+        if (fsRes.ok) {
+          const fsData = await fsRes.json();
+          allOrders = (fsData.documents || []).map(fromFirestoreDoc).filter(Boolean);
+        }
+      } catch (e) {}
+
+      if (allOrders.length === 0) {
+        allOrders = await readCloudinaryDb("orders");
+      }
+
+      const matched = allOrders.filter(o => {
+        const matchEmail = email && o.email && o.email.toLowerCase().trim() === email;
+        const matchPhone = phone.length >= 6 && o.phone && o.phone.replace(/[^0-9]/g, '').endsWith(phone);
+        return matchEmail || matchPhone;
+      });
+
+      return res.status(200).json({
+        status: "Success",
+        orders: matched
+      });
     }
 
     // ====================================================
