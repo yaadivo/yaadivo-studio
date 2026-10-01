@@ -234,10 +234,10 @@
 </head>
 <body>
 
-    <audio id="bg-audio" loop src="music.mp3" preload="auto"></audio>
+    <audio id="bg-audio" loop src="assets/music.mp3" preload="auto"></audio>
+    <video id="tv-video" loop muted playsinline src="assets/video.mp4" style="display:none;"></video>
 
     <div id="canvas-container"></div>
-    <div class="v3-badge">YAADIVO • LUXURY DRONE EXPERIENCE</div>
     <div class="luxury-badge">FLAGSHIP EXPERIENCE · 50K DESIGN STANDARD</div>
 
     <div class="header-bar">
@@ -755,32 +755,59 @@
             }
         }
 
-        // Curved TV Screen on Wall
-        function createCurvedTVWall(x, y, z) {
-            const group = new THREE.Group();
-            const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(6.5, 3.6, 0.15), new THREE.MeshStandardMaterial({ color: 0x111111 }));
-            
-            // Canvas texture for animated TV graphic
-            const tvCanvas = document.createElement('canvas');
-            tvCanvas.width = 512; tvCanvas.height = 256;
-            const ctx = tvCanvas.getContext('2d');
-            ctx.fillStyle = '#0a0f18'; ctx.fillRect(0, 0, 512, 256);
-            ctx.fillStyle = '#ff5e14'; ctx.font = 'bold 32px sans-serif';
-            ctx.fillText('YAADIVO ULTRA SHOWROOM', 40, 100);
-            ctx.fillStyle = '#ffffff'; ctx.font = '20px sans-serif';
-            ctx.fillText('• 8K Cinema Drones Available', 40, 150);
-            ctx.fillText('• Live Booking Active', 40, 185);
+// Curved TV Screen on Wall
+// Curved TV Screen on Wall with MP4 Video Support
+function createCurvedTVWall(x, y, z) {
+    const group = new THREE.Group();
 
-            const tvTex = new THREE.CanvasTexture(tvCanvas);
-            const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(6.3, 3.4), new THREE.MeshBasicMaterial({ map: tvTex }));
-            tvScreen.position.z = 0.09;
-            group.add(tvFrame);
-            group.add(tvScreen);
+    // TV Outer Frame
+    const tvFrame = new THREE.Mesh(
+        new THREE.BoxGeometry(6.6, 3.7, 0.15), 
+        new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2, metalness: 0.8 })
+    );
 
-            group.position.set(x, y, z);
-            scene.add(group);
-        }
+    // Get Video Element
+    const video = document.getElementById('tv-video');
+    video.play().catch(e => console.log("Autoplay blocked, user interaction required"));
 
+    // Create Three.js Video Texture
+    const videoTexture = new THREE.VideoTexture(video);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.RGBAFormat;
+
+    // Glowing/Emissive TV Screen Material
+    const tvScreenMat = new THREE.MeshBasicMaterial({ 
+        map: videoTexture 
+    });
+
+    const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(6.4, 3.5), tvScreenMat);
+    tvScreen.position.z = 0.081;
+
+    group.add(tvFrame);
+    group.add(tvScreen);
+
+    // Position setup (Shift Left / Right)
+    group.position.set(x, y, z);
+    scene.add(group);
+}
+
+        function enterShowroom() {
+    document.getElementById('welcome-overlay').style.display = 'none';
+    
+    // Play Background Audio
+    const audio = document.getElementById('bg-audio');
+    audio.play().catch(() => {});
+
+    // Play TV MP4 Video
+    const tvVideo = document.getElementById('tv-video');
+    if (tvVideo) {
+        tvVideo.play().catch(e => console.log("Video play error:", e));
+    }
+
+    initAudioEngine();
+}
+        
         // Showcase Almeera / Glass Cabinet
         function createGlassCabinet(x, y, z) {
             const group = new THREE.Group();
@@ -1299,7 +1326,7 @@
                          `*Date & Venue:* ${location}%0A%0A` +
                          `_Sent from Yaadivo 3D Showroom_`;
 
-            window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+            window.open(`https://wa.me/9695979091?text=${text}`, '_blank');
             closeModal('booking-modal');
         }
 
