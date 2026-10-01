@@ -234,8 +234,8 @@
 </head>
 <body>
 
-    <audio id="bg-audio" loop src="assets/music.mp3" preload="auto"></audio>
-    <video id="tv-video" loop muted playsinline src="assets/video.mp4" style="display:none;"></video>
+    <audio id="bg-audio" loop src="/assets/music.mp3" preload="auto"></audio>
+    <video id="tv-video" loop muted playsinline src="/assets/video.mp4" style="display:none;"></video>
 
     <div id="canvas-container"></div>
     <div class="luxury-badge">FLAGSHIP EXPERIENCE · 50K DESIGN STANDARD</div>
@@ -757,6 +757,7 @@
 
 // Curved TV Screen on Wall
 // Curved TV Screen on Wall with MP4 Video Support
+// Curved TV Screen on Wall with MP4 Video Support
 function createCurvedTVWall(x, y, z) {
     const group = new THREE.Group();
 
@@ -768,7 +769,9 @@ function createCurvedTVWall(x, y, z) {
 
     // Get Video Element
     const video = document.getElementById('tv-video');
-    video.play().catch(e => console.log("Autoplay blocked, user interaction required"));
+    if (video) {
+        video.play().catch(e => console.log("Autoplay blocked, user interaction required"));
+    }
 
     // Create Three.js Video Texture
     const videoTexture = new THREE.VideoTexture(video);
@@ -787,8 +790,8 @@ function createCurvedTVWall(x, y, z) {
     group.add(tvFrame);
     group.add(tvScreen);
 
-    // Position setup (Shift Left / Right)
-    group.position.set(x, y, z);
+    // RIGHT SIDE SHIFT: x + 12.5 lagaya hai taaki red box ke right edge par aa jaye
+    group.position.set(x + 12.5, y, z);
     scene.add(group);
 }
 
