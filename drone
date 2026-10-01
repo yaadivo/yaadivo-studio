@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yaadivo - Ultra Luxury Drone Showroom</title>
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-orange: #e96a20;
+            --brand-dark: #171717;
+            --modal-bg: #151515;
+            --border-color: rgba(20, 20, 20, 0.12);
+            --ivory: #f5f1ea;
+            --charcoal: #1d1c1a;
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            user-select: none; -webkit-user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            touch-action: none;
+        }
+
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #e9e4dc; color: #1a1917; }
+
+        #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* Top Header Bar */
+        .header-bar {
+            position: absolute; top: 20px; left: 24px; right: 24px; z-index: 10;
+            display: flex; justify-content: space-between; align-items: center;
+            pointer-events: none;
+        }
+
+        .brand-logo-img {
+            height: 52px; object-fit: contain;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.6));
+            pointer-events: auto;
+        }
+
+        .header-actions { display: flex; gap: 12px; pointer-events: auto; }
+
+        .btn-quick-book {
+            background: linear-gradient(135deg, #FF5E14, #d64700);
+            color: white; border: none; padding: 12px 24px; border-radius: 30px;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(255, 94, 20, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-quick-book:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(255, 94, 20, 0.6); }
+
+        .btn-icon-round {
+            background: rgba(15, 20, 28, 0.85); backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color); color: #ffffff;
+            width: 46px; height: 46px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+
+        .btn-icon-round:hover { background: rgba(255, 94, 20, 0.2); }
+
+        /* Drone Drawer Menu */
+        .jump-menu-toggle {
+            position: absolute; bottom: 25px; right: 25px; z-index: 12;
+            background: var(--primary-orange); color: white; border: none;
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; box-shadow: 0 8px 25px rgba(255, 94, 20, 0.5);
+            cursor: pointer; pointer-events: auto;
+        }
+
+        .drone-jump-panel {
+            position: absolute; bottom: 92px; right: 25px; z-index: 12;
+            background: rgba(15, 20, 28, 0.95); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color); border-radius: 20px; padding: 14px;
+            display: flex; flex-direction: column; gap: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            transform: scale(0.85); opacity: 0; pointer-events: none;
+            transform-origin: bottom right; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .drone-jump-panel.active { transform: scale(1); opacity: 1; pointer-events: auto; }
+
+        .jump-item {
+            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 18px; border-radius: 12px; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; color: #d1d5db; transition: all 0.2s;
+        }
+
+        .jump-item:hover { background: var(--primary-orange); color: white; }
+
+        /* Hover Proximity Marker */
+        .proximity-tag {
+            position: absolute; z-index: 11;
+            background: rgba(15, 20, 28, 0.92); backdrop-filter: blur(14px);
+            border: 1px solid var(--primary-orange); padding: 10px 18px; border-radius: 14px;
+            transform: translate(-50%, -100%); cursor: pointer; display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); pointer-events: auto; text-align: center; white-space: nowrap;
+        }
+
+        .proximity-tag h4 { font-size: 0.9rem; color: var(--primary-orange); font-weight: 800; }
+        .proximity-tag p { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+
+        /* Touch Controls */
+        .mobile-joystick {
+            position: absolute; bottom: 30px; left: 30px; z-index: 10;
+            width: 110px; height: 110px; background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px);
+            border-radius: 50%; display: none;
+        }
+
+        .joystick-knob {
+            width: 44px; height: 44px; background: var(--primary-orange);
+            border-radius: 50%; position: absolute; top: 33px; left: 33px;
+            box-shadow: 0 4px 15px rgba(255, 94, 20, 0.5); pointer-events: none;
+        }
+
+        .mobile-look-hint {
+            position: absolute; top: 85px; right: 24px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); color: #d1d5db;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; z-index: 10;
+            pointer-events: none; display: none;
+        }
+
+        /* Specification Glass Overlay Card */
+        .spec-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(12px); z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s ease; padding: 20px;
+        }
+
+        .spec-modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .spec-modal-card {
+            background: #0f141c; border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px; width: 100%; max-width: 440px; padding: 28px;
+            position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+        }
+
+        .spec-modal-close {
+            position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.08);
+            border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; color: #9ca3af; transition: 0.2s;
+        }
+
+        .spec-modal-close:hover { color: #ffffff; background: rgba(255,255,255,0.2); }
+
+        .spec-drone-title { font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 6px; }
+
+        .spec-price-tag {
+            display: inline-block; background: rgba(255, 94, 20, 0.15);
+            border: 1px solid rgba(255, 94, 20, 0.4); color: #ff7d3b;
+            font-weight: 700; font-size: 0.85rem; padding: 4px 14px; border-radius: 20px; margin-bottom: 16px;
+        }
+
+        .spec-description { font-size: 0.85rem; color: #9ca3af; line-height: 1.5; margin-bottom: 22px; }
+
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+
+        .spec-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 14px; padding: 12px 14px; }
+        .spec-box span { display: block; font-size: 0.7rem; color: #6b7280; font-weight: 600; margin-bottom: 4px; }
+        .spec-box h5 { font-size: 0.88rem; color: #ffffff; font-weight: 700; }
+
+        .btn-orange-full {
+            width: 100%; background: linear-gradient(135deg, #FF5E14, #e04b00); color: white; border: none;
+            padding: 14px; border-radius: 16px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 25px rgba(255, 94, 20, 0.4);
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: #d1d5db; }
+        .form-control {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+            padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; color: #ffffff; outline: none;
+        }
+        .form-control option { background: #151515; color: #fff; }
+
+        /* Premium showroom UI */
+        .luxury-badge {
+            position: absolute; left: 28px; bottom: 28px; z-index: 10;
+            padding: 10px 16px; border-radius: 999px;
+            background: rgba(255,255,255,.72); color: #2a2927;
+            border: 1px solid rgba(255,255,255,.9);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 10px 35px rgba(0,0,0,.12);
+            font-size: .72rem; letter-spacing: .16em; font-weight: 800;
+        }
+        .brand-poster-label {
+            font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+            color: rgba(255,255,255,.72); margin-top: 6px;
+        }
+
+        /* Landing Intro Modal */
+        #welcome-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #05080c;
+            z-index: 1000; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;
+        }
+
+        .welcome-card { max-width: 440px; }
+        .welcome-card img { height: 75px; margin-bottom: 24px; object-fit: contain; }
+        .welcome-card h1 { font-size: 1.8rem; font-weight: 800; color: #ffffff; margin-bottom: 10px; }
+        .welcome-card p { font-size: 0.88rem; color: #9ca3af; margin-bottom: 28px; line-height: 1.6; }
+        
+        .btn-enter {
+            background: var(--primary-orange); color: white; border: none;
+            padding: 14px 42px; border-radius: 40px; font-weight: 800; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 8px 25px rgba(255, 94, 20, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-joystick, .mobile-look-hint { display: block; }
+            .header-bar { top: 12px; left: 12px; right: 12px; }
+            .brand-logo-img { height: 40px; }
+            .btn-quick-book span { display: none; }
+        }
+    
+        /* V3 architectural polish */
+        #canvas-container::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(8,7,6,.22) 100%);mix-blend-mode:multiply;z-index:2}
+        .brand-logo-img{filter:drop-shadow(0 8px 22px rgba(0,0,0,.24))}
+        .v3-badge{position:fixed;right:22px;bottom:22px;z-index:20;padding:10px 14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(16,15,14,.58);backdrop-filter:blur(14px);color:#fff;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-audio" loop src="music.mp3" preload="auto"></audio>
+
+    <div id="canvas-container"></div>
+    <div class="v3-badge">YAADIVO • LUXURY DRONE EXPERIENCE</div>
+    <div class="luxury-badge">FLAGSHIP EXPERIENCE · 50K DESIGN STANDARD</div>
+
+    <div class="header-bar">
+        <img src="yaadivo-logo.png" alt="Yaadivo Logo" class="brand-logo-img">
+        <div class="header-actions">
+            <button class="btn-quick-book" onclick="openBookingModal()">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Quick Book</span>
+            </button>
+            <button class="btn-icon-round" onclick="toggleAudio()" id="audio-btn">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-look-hint">
+        <i class="fa-solid fa-hand-pointer"></i> Drag screen to look 360°
+    </div>
+
+    <div class="proximity-tag" id="proximity-tag" onclick="inspectCurrentProximityDrone()">
+        <h4 id="prox-title">DJI Mavic 3 Pro</h4>
+        <p id="prox-subtitle">Tap to View Specs</p>
+    </div>
+
+    <button class="jump-menu-toggle" onclick="toggleJumpPanel()">
+        <i class="fa-solid fa-bars-staggered"></i>
+    </button>
+
+    <div class="drone-jump-panel" id="jump-panel">
+        <div class="jump-item" onclick="teleportToDrone(0)"><i class="fa-solid fa-paper-plane"></i> DJI Mavic 3 Pro</div>
+        <div class="jump-item" onclick="teleportToDrone(1)"><i class="fa-solid fa-paper-plane"></i> DJI Inspire 3</div>
+        <div class="jump-item" onclick="teleportToDrone(2)"><i class="fa-solid fa-paper-plane"></i> DJI Air 3</div>
+        <div class="jump-item" onclick="teleportToDrone(3)"><i class="fa-solid fa-paper-plane"></i> DJI FPV Drone</div>
+        <div class="jump-item" onclick="teleportToDrone(4)"><i class="fa-solid fa-paper-plane"></i> DJI Phantom 4 Pro</div>
+    </div>
+
+    <div class="mobile-joystick" id="joystick-container">
+        <div class="joystick-knob" id="joystick-knob"></div>
+    </div>
+
+    <div id="loading-status" style="display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;padding:14px 18px;border-radius:12px;background:rgba(20,20,20,.9);color:#fff;font:600 13px/1.4 sans-serif;box-shadow:0 15px 40px rgba(0,0,0,.35)"></div>
+
+    <div id="welcome-overlay">
+        <div class="welcome-card">
+            <img src="yaadivo-logo.png" alt="Yaadivo Logo">
+            <h1>Yaadivo Flagship Drone Gallery</h1>
+            <p>Walk through a photoreal-inspired luxury showroom with premium architectural lighting, branded wall displays, detailed DJI-style drone replicas, and immersive ambient audio.</p>
+            <button class="btn-enter" onclick="enterShowroom()">
+                ENTER SHOWROOM
+            </button>
+        </div>
+    </div>
+
+    <!-- Inspect Modal -->
+    <div class="spec-modal-overlay" id="inspect-modal">
+        <div class="spec-modal-card">
+            <button class="spec-modal-close" onclick="closeModal('inspect-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="spec-drone-title" id="m-title">DJI Air 3</h2>
+            <div class="spec-price-tag" id="m-price">₹3,000 / Day</div>
+            <p class="spec-description" id="m-desc">Versatile medium telephoto drone ideal for capturing intimate candid moments from safe distances.</p>
+            
+            <div class="spec-grid">
+                <div class="spec-box">
+                    <span>Camera Quality</span>
+                    <h5 id="m-cam">Dual 4K/60fps HDR</h5>
+                </div>
+                <div class="spec-box">
+                    <span>Max Flight Time</span>
+                    <h5 id="m-time">46 Mins</h5>
+                </div>
+                <div class="spec-box">
+                    <span>Transmission Range</span>
+                    <h5 id="m-range">20 KM</h5>
+                </div>
+                <div class="spec-box">
+                    <span>Recommended For</span>
+                    <h5 id="m-rec">Birthdays & Receptions</h5>
+                </div>
+            </div>
+
+            <button class="btn-orange-full" onclick="proceedToBookingFromInspect()">
+                <i class="fa-solid fa-paper-plane"></i> Book This Drone Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="spec-modal-overlay" id="booking-modal">
+        <div class="spec-modal-card">
+            <button class="spec-modal-close" onclick="closeModal('booking-modal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="spec-drone-title" style="font-size:1.4rem; color:var(--primary-orange);">Book Drone For Function</h2>
+            <p class="spec-description" style="margin-bottom:16px;">Instant quote & date check directly on WhatsApp.</p>
+            
+            <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="book-name" class="form-control" placeholder="Enter name" required>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="tel" id="book-phone" class="form-control" placeholder="+91 98765 43210" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Drone Model</label>
+                    <select id="book-drone-select" class="form-control" required>
+                        <option value="DJI Mavic 3 Pro">DJI Mavic 3 Pro (₹4,500/day)</option>
+                        <option value="DJI Inspire 3">DJI Inspire 3 Cinema (₹12,000/day)</option>
+                        <option value="DJI Air 3">DJI Air 3 (₹3,000/day)</option>
+                        <option value="DJI FPV Drone">DJI FPV Cinematic (₹5,000/day)</option>
+                        <option value="DJI Phantom 4 Pro">DJI Phantom 4 Pro (₹3,500/day)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Event Date & Location</label>
+                    <input type="text" id="book-location" class="form-control" placeholder="e.g. 15th Nov, Lucknow" required>
+                </div>
+                <button type="submit" class="btn-orange-full" style="margin-top:10px;"><i class="fa-brands fa-whatsapp"></i> Send WhatsApp Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3D Engine Script -->
+    <script>
+        const DRONE_DATA = [
+            { 
+                name: "DJI Mavic 3 Pro", price: "₹4,500 / Day", 
+                desc: "Flagship triple-camera system featuring Hasselblad sensor for ultimate cinematic wedding shoot.",
+                cam: "4/3 CMOS Hasselblad", time: "43 Mins", range: "15 KM", rec: "Grand Weddings & Pre-weddings",
+                pos: { x: -8, y: 1.35, z: -2 }, type: "mavic"
+            },
+            { 
+                name: "DJI Inspire 3", price: "₹12,000 / Day", 
+                desc: "Full-frame 8K cinema drone with 360-degree pan control for high-end movie & luxury shoots.",
+                cam: "8K Full-Frame Zenmuse", time: "28 Mins", range: "15 KM", rec: "Celebrity Events & Commercials",
+                pos: { x: -4, y: 1.35, z: -2 }, type: "inspire"
+            },
+            { 
+                name: "DJI Air 3", price: "₹3,000 / Day", 
+                desc: "Versatile medium telephoto drone ideal for capturing intimate candid moments from safe distances.",
+                cam: "Dual 4K/60fps HDR", time: "46 Mins", range: "20 KM", rec: "Birthdays & Receptions",
+                pos: { x: 0, y: 1.35, z: -2 }, type: "air"
+            },
+            { 
+                name: "DJI FPV Drone", price: "₹5,000 / Day", 
+                desc: "High-speed immersive FPV drone for fast dynamic entry shots, sports & high-energy dancing clips.",
+                cam: "4K/60fps 150° FOV", time: "20 Mins", range: "10 KM", rec: "Sangeet Entries & Parties",
+                pos: { x: 4, y: 1.35, z: -2 }, type: "fpv"
+            },
+            { 
+                name: "DJI Phantom 4 Pro", price: "₹3,500 / Day", 
+                desc: "Iconic mechanical shutter drone with solid wind resistance for stable outdoor aerial mapping & shoots.",
+                cam: "1-inch 20MP Sensor", time: "30 Mins", range: "7 KM", rec: "Outdoor Functions & Venues",
+                pos: { x: 8, y: 1.35, z: -2 }, type: "phantom"
+            }
+        ];
+
+        let scene, camera, renderer;
+        let player = { x: 0, y: 1.7, z: 5, rotY: 0, pitch: 0 };
+        let keys = {};
+        let droneObjects = [];
+        let activeProximityIndex = -1;
+        let isAudioMuted = false;
+        let audioCtx, droneHumOsc, droneHumGain;
+        const colliders = [];
+
+        let touchMoveVector = { x: 0, y: 0 };
+        let isTouchLooking = false;
+        let lastTouchX = 0, lastTouchY = 0;
+
+        // Optional local GLB loader. Missing model files never block the showroom.
+        function loadLicensedGLBModels() {
+            try {
+                if (!window.THREE || !THREE.GLTFLoader) return;
+                const loader = new THREE.GLTFLoader();
+                const models = [
+                    { url: 'assets/models/dji-mavic-3.glb', index: 0, scale: 1.8 },
+                    { url: 'assets/models/dji-mini-3.glb', index: 2, scale: 1.7 },
+                    { url: 'assets/models/dji-avata.glb', index: 3, scale: 1.7 }
+                ];
+                models.forEach(item => {
+                    loader.load(item.url, gltf => {
+                        const root = gltf.scene;
+                        root.scale.setScalar(item.scale);
+                        const target = droneObjects[item.index];
+                        if (target && target.parent) {
+                            target.parent.add(root);
+                            root.position.copy(target.position);
+                            root.rotation.copy(target.rotation);
+                            target.visible = false;
+                        }
+                    }, undefined, () => { /* optional asset: keep procedural model */ });
+                });
+            } catch (e) {
+                console.warn('Optional GLB models unavailable; using built-in showroom models.', e);
+            }
+        }
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xe7e1d8);
+            scene.fog = new THREE.FogExp2(0xe7e1d8, 0.006);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 120);
+            camera.rotation.order = 'YXZ';
+            camera.position.set(player.x, player.y, player.z);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.25;
+            container.appendChild(renderer.domElement);
+
+            // Professional architectural lighting: neutral base + warm cove + directional sunlight.
+            const ambient = new THREE.AmbientLight(0xfffaf4, 0.78);
+            scene.add(ambient);
+
+            const hemi = new THREE.HemisphereLight(0xfff7eb, 0x26211d, 1.15);
+            scene.add(hemi);
+
+            const sunLight = new THREE.DirectionalLight(0xffe7c5, 4.8);
+            sunLight.position.set(-18, 15, 11);
+            sunLight.target.position.set(0, 0, -2);
+            sunLight.castShadow = true;
+            sunLight.shadow.mapSize.width = 3072;
+            sunLight.shadow.mapSize.height = 3072;
+            sunLight.shadow.camera.left = -25; sunLight.shadow.camera.right = 25;
+            sunLight.shadow.camera.top = 18; sunLight.shadow.camera.bottom = -12;
+            sunLight.shadow.bias = -0.0003;
+            scene.add(sunLight, sunLight.target);
+
+            // Warm ceiling cove pools.
+            [[-12,6.9,-5],[0,7.0,-2],[12,6.9,-5]].forEach(([x,y,z])=>{
+                const l=new THREE.PointLight(0xffb36d,1.65,13,2); l.position.set(x,y,z); scene.add(l);
+            });
+            // Focus spots aimed at product pedestals.
+            [[-7.5,7,-2.5],[-2.5,7,-2.5],[2.5,7,-2.5],[7.5,7,-2.5]].forEach(([x,y,z])=>{
+                const l=new THREE.SpotLight(0xfff8ed,4.0,18,Math.PI/9,0.62,1.2);
+                l.position.set(x,y,z); l.target.position.set(x,0.8,-2.5); l.castShadow=true;
+                l.shadow.mapSize.width=1024; l.shadow.mapSize.height=1024;
+                scene.add(l,l.target);
+            });
+            const warmFill = new THREE.PointLight(0xffc58c, 1.6, 24); warmFill.position.set(3,4,5); scene.add(warmFill);
+            const softFill = new THREE.PointLight(0xdbeaff, 1.0, 30); softFill.position.set(-14,4,0); scene.add(softFill);
+
+            buildLuxuryShowroom();
+            buildShowroomDisplays();
+            loadLicensedGLBModels();
+            setupControls();
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function buildLuxuryShowroom() {
+            // Bright architectural shell inspired by premium hotel / automotive galleries.
+            const floorGeo = new THREE.PlaneGeometry(48, 34);
+            const floorMat = new THREE.MeshPhysicalMaterial({
+                color: 0xe7e1d8, roughness: 0.18, metalness: 0.05, clearcoat: 0.35
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            // Subtle marble inlay lines.
+            const inlayMat = new THREE.MeshBasicMaterial({ color: 0xcfc7bb });
+            for (let x = -20; x <= 20; x += 5) {
+                const line = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.006, 30), inlayMat);
+                line.position.set(x, 0.006, 0);
+                scene.add(line);
+            }
+            for (let z = -10; z <= 10; z += 5) {
+                const line = new THREE.Mesh(new THREE.BoxGeometry(40, 0.006, 0.018), inlayMat);
+                line.position.set(0, 0.007, z);
+                scene.add(line);
+            }
+
+            // Warm white ceiling with architectural ribs.
+            const ceiling = new THREE.Mesh(
+                new THREE.PlaneGeometry(48, 34),
+                new THREE.MeshStandardMaterial({ color: 0xf1eee8, roughness: 0.75 })
+            );
+            ceiling.position.y = 8.2;
+            ceiling.rotation.x = Math.PI / 2;
+            scene.add(ceiling);
+
+            // Dark timber slat ceiling + recessed lighting rhythm.
+            const ceilingSlatMat=new THREE.MeshStandardMaterial({color:0x3a3028,roughness:.42,metalness:.05});
+            for(let x=-20;x<=20;x+=.72){ const slat=new THREE.Mesh(new THREE.BoxGeometry(.08,.10,32),ceilingSlatMat); slat.position.set(x,8.0,0); scene.add(slat); }
+
+            const warmStripMat = new THREE.MeshBasicMaterial({ color: 0xffd9ad });
+            [-9, -4.5, 0, 4.5, 9].forEach(z => {
+                const strip = new THREE.Mesh(new THREE.BoxGeometry(39, 0.075, 0.22), warmStripMat);
+                strip.position.set(0, 8.08, z);
+                scene.add(strip);
+            });
+
+            // Back wall, softly textured with vertical luxury panels.
+            const backWall = new THREE.Mesh(
+                new THREE.BoxGeometry(42, 8, 0.5),
+                new THREE.MeshStandardMaterial({ color: 0xddd8d0, roughness: 0.48 })
+            );
+            backWall.position.set(0, 4, -11);
+            scene.add(backWall);
+
+            const panelMat = new THREE.MeshStandardMaterial({ color: 0xcac3b8, roughness: 0.42 });
+            for (let x = -20; x <= 20; x += 2.4) {
+                const panel = new THREE.Mesh(new THREE.BoxGeometry(0.035, 7.4, 0.04), panelMat);
+                panel.position.set(x, 4, -10.72);
+                scene.add(panel);
+            }
+
+            // Back wall brand poster.
+            createBrandPoster(0, 4.9, -10.68, 8.8, 3.2, 0);
+
+            // Right wall: architectural fins + second Yaadivo poster.
+            const rightWall = new THREE.Mesh(
+                new THREE.BoxGeometry(0.45, 8, 30),
+                new THREE.MeshStandardMaterial({ color: 0x252321, roughness: 0.35, metalness: 0.25 })
+            );
+            rightWall.position.set(21, 4, 0);
+            scene.add(rightWall);
+
+            const woodMat = new THREE.MeshStandardMaterial({ color: 0x9c7958, roughness: 0.32 });
+            for (let z = -13; z <= 13; z += 0.55) {
+                const fin = new THREE.Mesh(new THREE.BoxGeometry(0.12, 6.7, 0.08), woodMat);
+                fin.position.set(20.72, 4.1, z);
+                scene.add(fin);
+            }
+            createBrandPoster(20.66, 5.0, 1.5, 5.6, 2.3, -Math.PI / 2);
+
+            // Floor-to-ceiling glass facade on the left, with mullions.
+            const glassMat = new THREE.MeshPhysicalMaterial({
+                color: 0xeaf4f5, transparent: true, opacity: 0.28,
+                roughness: 0.06, metalness: 0.0, transmission: 0.45
+            });
+            const glass = new THREE.Mesh(new THREE.BoxGeometry(0.16, 7.3, 29), glassMat);
+            glass.position.set(-21, 3.8, 0);
+            scene.add(glass);
+
+            const mullionMat = new THREE.MeshStandardMaterial({ color: 0x171717, metalness: 0.7, roughness: 0.22 });
+            for (let z = -14; z <= 14; z += 3.5) {
+                const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.16, 7.8, 0.12), mullionMat);
+                mullion.position.set(-20.85, 4, z);
+                scene.add(mullion);
+            }
+            for (let y = 1; y <= 7; y += 3) {
+                const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 29), mullionMat);
+                mullion.position.set(-20.85, y, 0);
+                scene.add(mullion);
+            }
+
+            // Fully enclosed rear + controlled glass entrance: no open void behind the player.
+            const frontFrameMat=new THREE.MeshStandardMaterial({color:0x171717,metalness:.75,roughness:.2});
+            const frontHeader=new THREE.Mesh(new THREE.BoxGeometry(40,6.9,.18),new THREE.MeshPhysicalMaterial({color:0xb9c9ca,transparent:true,opacity:.16,roughness:.05,transmission:.65})); frontHeader.position.set(0,3.55,14.7); scene.add(frontHeader);
+            [-15,-7.5,0,7.5,15].forEach(x=>{const mull=new THREE.Mesh(new THREE.BoxGeometry(.12,7.2,.22),frontFrameMat); mull.position.set(x,3.6,14.62); scene.add(mull);});
+            const frontTop=new THREE.Mesh(new THREE.BoxGeometry(40,.16,.3),frontFrameMat); frontTop.position.set(0,7.2,14.62); scene.add(frontTop);
+
+            // Sculptural entrance columns / portals.
+            [-15, -8, 8, 15].forEach(x => {
+                const col = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.32, 0.45, 7.2, 32),
+                    new THREE.MeshStandardMaterial({ color: 0xf0ece5, roughness: 0.22 })
+                );
+                col.position.set(x, 3.6, -8.7);
+                col.castShadow = true;
+                scene.add(col);
+            });
+
+            // Premium lounge furniture.
+            createCurvedOrangeSofa(-11, 0, 4.2, Math.PI / 2);
+            createCurvedOrangeSofa(10.5, 0, 4.3, -Math.PI / 2);
+            createRoundCoffeeTable(0, 0.36, 5.2, 2.5);
+            createRoundCoffeeTable(-9, 0.36, -1.0, 1.7);
+            createRoundCoffeeTable(10, 0.36, -1.0, 1.7);
+
+            // Greenery for the high-end hospitality feel.
+            createPlanter(-17.5, 0, 5.8, 1.2);
+            createPlanter(17.5, 0, 5.8, 1.2);
+            createPlanter(-6.5, 0, -7.5, 0.9);
+            createPlanter(6.5, 0, -7.5, 0.9);
+
+            // Glass display cabinets.
+            createGlassCabinet(-18, 0, -3.2);
+            createGlassCabinet(18, 0, -3.2);
+
+            // Two large Yaadivo hero posters, matching the reference showroom composition.
+            createBrandPoster(-15.2, 4.65, -10.66, 5.2, 3.25, 0);
+            createBrandPoster(13.8, 4.65, 20.66, 5.0, 3.1, -Math.PI / 2);
+
+            // Premium display shelving, reception and lounge accessories.
+            createDisplayShelves(14.9, 0, -7.7);
+            createReceptionDesk(15.4, 0, 5.5);
+            createConsole(-15.3, 0, -6.6);
+            createFloorLamp(-10.7, 0, 1.7);
+            createFloorLamp(10.8, 0, 1.7);
+
+            // Brand screen, integrated into the back wall.
+            createCurvedTVWall(0, 4.25, -10.55);
+
+            // Colliders
+            colliders.push(new THREE.Box3(new THREE.Vector3(-21.5, 0, -11.3), new THREE.Vector3(21.5, 8, -10.6)));
+            colliders.push(new THREE.Box3(new THREE.Vector3(-21.8, 0, -15), new THREE.Vector3(-20.2, 8, 15)));
+            colliders.push(new THREE.Box3(new THREE.Vector3(20.2, 0, -15), new THREE.Vector3(21.8, 8, 15)));
+        }
+
+
+        function createDisplayShelves(x,y,z){
+            const group=new THREE.Group();
+            const dark=new THREE.MeshStandardMaterial({color:0x171513,metalness:.55,roughness:.22});
+            const brass=new THREE.MeshStandardMaterial({color:0x9b6b35,metalness:.8,roughness:.2});
+            group.add(new THREE.Mesh(new THREE.BoxGeometry(5.8,5.8,.35),dark));
+            for(let i=0;i<5;i++){
+                const shelf=new THREE.Mesh(new THREE.BoxGeometry(5.1,.10,.9),brass); shelf.position.set(0,.7+i*1.0,.32); group.add(shelf);
+                const glow=new THREE.PointLight(0xffc184,.65,3.2); glow.position.set(0,.9+i*1.0,.15); group.add(glow);
+            }
+            group.position.set(x,y,z); scene.add(group);
+        }
+
+        function createReceptionDesk(x,y,z){
+            const g=new THREE.Group();
+            const stone=new THREE.MeshPhysicalMaterial({color:0x211d1a,roughness:.25,metalness:.08,clearcoat:.25});
+            const face=new THREE.Mesh(new THREE.BoxGeometry(5.5,2.2,1.6),stone); face.position.y=1.1; g.add(face);
+            const top=new THREE.Mesh(new THREE.BoxGeometry(5.7,.14,1.75),new THREE.MeshStandardMaterial({color:0xe8e0d5,roughness:.18,metalness:.05})); top.position.y=2.22; g.add(top);
+            const logoTex=new THREE.TextureLoader().load('yaadivo-logo.png');
+            const logo=new THREE.Mesh(new THREE.PlaneGeometry(1.15,.46),new THREE.MeshBasicMaterial({map:logoTex,transparent:true})); logo.position.set(0,1.12,.83); g.add(logo);
+            const strip=new THREE.Mesh(new THREE.BoxGeometry(5.4,.045,.03),new THREE.MeshBasicMaterial({color:0xffa45e})); strip.position.set(0,.08,.82); g.add(strip);
+            g.position.set(x,y,z); scene.add(g);
+            colliders.push(new THREE.Box3().setFromObject(g));
+        }
+
+        function createConsole(x,y,z){
+            const base=new THREE.Mesh(new THREE.BoxGeometry(5.5,.8,1.0),new THREE.MeshStandardMaterial({color:0x211e1b,metalness:.55,roughness:.24})); base.position.set(x,.4,z); scene.add(base);
+            for(let i=0;i<3;i++){ const frame=new THREE.Mesh(new THREE.BoxGeometry(1.45,2.7,.10),new THREE.MeshStandardMaterial({color:0x121212,metalness:.2,roughness:.28})); frame.position.set(x-1.75+i*1.75,1.9,z-.48); scene.add(frame); }
+        }
+
+        function createFloorLamp(x,y,z){
+            const metal=new THREE.MeshStandardMaterial({color:0x161616,metalness:.75,roughness:.2});
+            const pole=new THREE.Mesh(new THREE.CylinderGeometry(.035,.045,2.8,20),metal); pole.position.set(x,1.4,z); scene.add(pole);
+            const shade=new THREE.Mesh(new THREE.CylinderGeometry(.25,.12,.32,32),new THREE.MeshStandardMaterial({color:0xefe6d8,roughness:.45})); shade.position.set(x,2.8,z); scene.add(shade);
+            const bulb=new THREE.PointLight(0xffd4a8,1.2,5); bulb.position.set(x,2.7,z); scene.add(bulb);
+        }
+
+        function createBrandPoster(x, y, z, w, h, rotY) {
+            const group = new THREE.Group();
+            const frame = new THREE.Mesh(
+                new THREE.BoxGeometry(w + 0.35, h + 0.35, 0.12),
+                new THREE.MeshStandardMaterial({
+                    color: 0x161616, metalness: 0.8, roughness: 0.2
+                })
+            );
+            const glow = new THREE.Mesh(
+                new THREE.BoxGeometry(w + 0.12, h + 0.12, 0.035),
+                new THREE.MeshBasicMaterial({ color: 0x8b2413 })
+            );
+            glow.position.z = 0.065;
+
+            const texture = new THREE.TextureLoader().load('yaadivo-logo.png');
+            const poster = new THREE.Mesh(
+                new THREE.PlaneGeometry(w, h),
+                new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+            );
+            poster.position.z = 0.09;
+
+            group.add(frame, glow, poster);
+            group.position.set(x, y, z);
+            group.rotation.y = rotY;
+            scene.add(group);
+
+            const light = new THREE.PointLight(0xffa65b, 0.8, 7);
+            light.position.set(x, y, z + 0.4);
+            scene.add(light);
+        }
+
+        function createRoundCoffeeTable(x, y, z, radius) {
+            const top = new THREE.Mesh(
+                new THREE.CylinderGeometry(radius, radius * 0.94, 0.12, 64),
+                new THREE.MeshStandardMaterial({ color: 0xd9d3c9, roughness: 0.16, metalness: 0.08 })
+            );
+            top.position.set(x, y + 0.25, z);
+            top.castShadow = true;
+            top.receiveShadow = true;
+            scene.add(top);
+
+            const leg = new THREE.Mesh(
+                new THREE.CylinderGeometry(radius * 0.2, radius * 0.28, 0.48, 48),
+                new THREE.MeshStandardMaterial({ color: 0x272624, metalness: 0.65, roughness: 0.25 })
+            );
+            leg.position.set(x, y, z);
+            scene.add(leg);
+        }
+
+        function createPlanter(x, y, z, scale) {
+            const pot = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.45 * scale, 0.6 * scale, 0.75 * scale, 32),
+                new THREE.MeshStandardMaterial({ color: 0xddd6cb, roughness: 0.7 })
+            );
+            pot.position.set(x, 0.38 * scale, z);
+            pot.castShadow = true;
+            scene.add(pot);
+
+            const green = new THREE.MeshStandardMaterial({ color: 0x4c6a48, roughness: 0.85 });
+            for (let i = 0; i < 12; i++) {
+                const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.28 * scale, 12, 8), green);
+                const a = i * Math.PI * 2 / 12;
+                leaf.scale.set(0.75, 1.8, 0.75);
+                leaf.position.set(x + Math.cos(a) * 0.35 * scale, 0.9 * scale + (i % 3) * 0.18 * scale, z + Math.sin(a) * 0.35 * scale);
+                leaf.castShadow = true;
+                scene.add(leaf);
+            }
+        }
+
+        // Curved TV Screen on Wall
+        function createCurvedTVWall(x, y, z) {
+            const group = new THREE.Group();
+            const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(6.5, 3.6, 0.15), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+            
+            // Canvas texture for animated TV graphic
+            const tvCanvas = document.createElement('canvas');
+            tvCanvas.width = 512; tvCanvas.height = 256;
+            const ctx = tvCanvas.getContext('2d');
+            ctx.fillStyle = '#0a0f18'; ctx.fillRect(0, 0, 512, 256);
+            ctx.fillStyle = '#ff5e14'; ctx.font = 'bold 32px sans-serif';
+            ctx.fillText('YAADIVO ULTRA SHOWROOM', 40, 100);
+            ctx.fillStyle = '#ffffff'; ctx.font = '20px sans-serif';
+            ctx.fillText('• 8K Cinema Drones Available', 40, 150);
+            ctx.fillText('• Live Booking Active', 40, 185);
+
+            const tvTex = new THREE.CanvasTexture(tvCanvas);
+            const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(6.3, 3.4), new THREE.MeshBasicMaterial({ map: tvTex }));
+            tvScreen.position.z = 0.09;
+            group.add(tvFrame);
+            group.add(tvScreen);
+
+            group.position.set(x, y, z);
+            scene.add(group);
+        }
+
+        // Showcase Almeera / Glass Cabinet
+        function createGlassCabinet(x, y, z) {
+            const group = new THREE.Group();
+            const darkMat = new THREE.MeshStandardMaterial({ color: 0x121720, roughness: 0.3 });
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, roughness: 0.1, transmission: 0.9 });
+
+            const base = new THREE.Mesh(new THREE.BoxGeometry(3, 0.6, 1.4), darkMat);
+            base.position.y = 0.3;
+            group.add(base);
+
+            const glass = new THREE.Mesh(new THREE.BoxGeometry(2.9, 4.5, 1.3), glassMat);
+            glass.position.y = 2.85;
+            group.add(glass);
+
+            // Internal shelves
+            for (let sy = 1.5; sy <= 4; sy += 1.2) {
+                const shelf = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.06, 1.2), darkMat);
+                shelf.position.y = sy;
+                group.add(shelf);
+            }
+
+            group.position.set(x, y, z);
+            scene.add(group);
+            colliders.push(new THREE.Box3().setFromObject(group));
+        }
+
+        function createCurvedOrangeSofa(x, y, z, rotation) {
+            const group = new THREE.Group();
+            const leather = new THREE.MeshPhysicalMaterial({color:0xb94d1d,roughness:.23,metalness:.015,clearcoat:.58,clearcoatRoughness:.16});
+            const piping = new THREE.MeshStandardMaterial({color:0x6f260f,roughness:.35});
+            const cream = new THREE.MeshPhysicalMaterial({color:0xe8dfd3,roughness:.34,clearcoat:.2});
+            const base=new THREE.Mesh(new THREE.CylinderGeometry(2.85,3.0,.42,64,1,false,0,Math.PI*1.08),piping); base.rotation.y=Math.PI; base.scale.z=.72; base.position.y=.3; group.add(base);
+            const seat=new THREE.Mesh(new THREE.CylinderGeometry(2.62,2.7,.46,64,1,false,0,Math.PI*1.08),leather); seat.rotation.y=Math.PI; seat.scale.z=.7; seat.position.set(0,.62,.05); seat.castShadow=true; group.add(seat);
+            const back=new THREE.Mesh(new THREE.TorusGeometry(2.2,.42,24,96,Math.PI*1.12),leather); back.rotation.x=Math.PI/2; back.rotation.z=Math.PI; back.position.set(0,1.12,-.36); back.scale.set(1.18,.58,1); back.castShadow=true; group.add(back);
+            [-1,1].forEach(side=>{
+                // r128 does not ship CapsuleGeometry in the core build.
+                // Build the premium rounded armrest from a cylinder + spheres instead.
+                const armGroup = new THREE.Group();
+                const armBody = new THREE.Mesh(new THREE.CylinderGeometry(.46,.46,.9,32), leather);
+                armBody.rotation.z = Math.PI / 2;
+                armBody.scale.z = 1.0;
+                armGroup.add(armBody);
+                const capA = new THREE.Mesh(new THREE.SphereGeometry(.46,32,20), leather);
+                const capB = new THREE.Mesh(new THREE.SphereGeometry(.46,32,20), leather);
+                capA.position.x = -.45; capB.position.x = .45;
+                armGroup.add(capA, capB);
+                armGroup.rotation.y = side * .06;
+                armGroup.scale.set(1.0,.72,1.0);
+                armGroup.position.set(side*2.28,.82,.02);
+                armGroup.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
+                group.add(armGroup);
+            });
+            // loose premium cushions
+            [-.72,.72].forEach(side=>{const c=new THREE.Mesh(new THREE.BoxGeometry(.95,.16,.72),cream); c.position.set(side,.84,.1); c.rotation.y=side*.08; c.castShadow=true; group.add(c);});
+            group.position.set(x,y,z); group.rotation.y=rotation; scene.add(group); colliders.push(new THREE.Box3().setFromObject(group));
+        }
+
+        // Showroom Stand Display
+        function buildShowroomDisplays() {
+            const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(22, 0.9, 1.8),
+                new THREE.MeshStandardMaterial({ color: 0x24211e, roughness: 0.2, metalness: 0.55 })
+            );
+            bar.position.set(0, 0.45, -2.5);
+            bar.castShadow = true; bar.receiveShadow = true;
+            scene.add(bar);
+
+            colliders.push(new THREE.Box3(new THREE.Vector3(-11.2, 0, -3.6), new THREE.Vector3(11.2, 2.5, -1.4)));
+
+            DRONE_DATA.forEach((data, index) => {
+                const droneModel = createHighDetailDrone(data.type);
+                droneModel.position.set(data.pos.x, data.pos.y, data.pos.z);
+
+                const ped = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.55, 0.6, 0.08, 24),
+                    new THREE.MeshStandardMaterial({ color: 0xd96a27, metalness: 0.78, emissive: 0x351006 })
+                );
+                ped.position.set(data.pos.x, 0.94, data.pos.z);
+                scene.add(ped);
+
+                scene.add(droneModel);
+                droneObjects.push({ mesh: droneModel, data: data, index: index });
+            });
+        }
+
+        // High Quality Procedural Realistic Drone Models
+        function createDJIBadge() {
+            const c = document.createElement('canvas');
+            c.width = 256; c.height = 96;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, 256, 96);
+            ctx.fillStyle = '#111'; ctx.font = 'bold 58px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('DJI', 128, 65);
+            const tex = new THREE.CanvasTexture(c);
+            return new THREE.Mesh(
+                new THREE.PlaneGeometry(0.34, 0.13),
+                new THREE.MeshBasicMaterial({ map: tex, transparent: true })
+            );
+        }
+
+        function createHighDetailDrone(type) {
+            const group = new THREE.Group();
+            const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x242424, metalness: 0.62, roughness: 0.22, clearcoat: 0.5 });
+            const lightBody = new THREE.MeshPhysicalMaterial({ color: 0xc9c9c9, metalness: 0.68, roughness: 0.18, clearcoat: 0.45 });
+            const blackMat = new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.35, roughness: 0.3 });
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0x111722, metalness: 0.2, roughness: 0.04, transmission: 0.55, clearcoat: 1 });
+            const propMat = new THREE.MeshStandardMaterial({ color: 0x171717, roughness: 0.28, transparent: true, opacity: 0.88 });
+            const orange = new THREE.MeshStandardMaterial({ color: 0xd85d1d, metalness: 0.25, roughness: 0.26 });
+            const rotors = [];
+
+            function motorAt(px, pz) {
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.045, 16), blackMat);
+                motor.position.set(px, 0.03, pz);
+                group.add(motor);
+                const prop = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.008, 0.045), propMat);
+                prop.position.set(px, 0.07, pz);
+                group.add(prop);
+                rotors.push(prop);
+            }
+
+            if (type === 'mavic' || type === 'air') {
+                const body = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), bodyMat);
+                body.scale.set(1.35, 0.42, 1.05);
+                group.add(body);
+
+                const nose = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.26), blackMat);
+                nose.position.set(0, -0.03, 0.27);
+                group.add(nose);
+
+                const gimbal = new THREE.Mesh(new THREE.SphereGeometry(0.105, 20, 14), lightBody);
+                gimbal.position.set(0, -0.15, 0.34);
+                group.add(gimbal);
+
+                const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.07, 0.055, 24), glassMat);
+                lens.rotation.x = Math.PI / 2;
+                lens.position.set(0, -0.15, 0.42);
+                group.add(lens);
+
+                [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz]) => {
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.045, 0.72), bodyMat);
+                    arm.position.set(sx * 0.29, 0, sz * 0.25);
+                    arm.rotation.y = sx * sz * 0.48;
+                    group.add(arm);
+                    motorAt(sx * 0.54, sz * 0.48);
+                });
+
+                if (type === 'mavic') {
+                    // Distinctive triple-camera look.
+                    [-0.085, 0, 0.085].forEach((dx, i) => {
+                        const cam = new THREE.Mesh(new THREE.CylinderGeometry(i === 1 ? 0.055 : 0.042, i === 1 ? 0.06 : 0.046, 0.035, 20), glassMat);
+                        cam.rotation.x = Math.PI / 2;
+                        cam.position.set(dx, -0.18, 0.45);
+                        group.add(cam);
+                    });
+                } else {
+                    // Dual-camera Air-series front cluster.
+                    [-0.065, 0.065].forEach(dx => {
+                        const cam = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.052, 0.035, 20), glassMat);
+                        cam.rotation.x = Math.PI / 2;
+                        cam.position.set(dx, -0.16, 0.44);
+                        group.add(cam);
+                    });
+                }
+            } else if (type === 'inspire') {
+                const body = new THREE.Mesh(new THREE.SphereGeometry(0.4, 24, 16), bodyMat);
+                body.scale.set(1.35, 0.48, 1.05);
+                group.add(body);
+
+                const cinemaCam = new THREE.Mesh(new THREE.SphereGeometry(0.19, 24, 16), lightBody);
+                cinemaCam.position.set(0, -0.25, 0.38);
+                group.add(cinemaCam);
+                const cinemaLens = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.12, 0.08, 28), glassMat);
+                cinemaLens.rotation.x = Math.PI / 2;
+                cinemaLens.position.set(0, -0.25, 0.53);
+                group.add(cinemaLens);
+
+                [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz]) => {
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.08, 0.95), blackMat);
+                    arm.position.set(sx * 0.44, 0, sz * 0.31);
+                    arm.rotation.y = sx * sz * 0.55;
+                    group.add(arm);
+                    motorAt(sx * 0.69, sz * 0.58);
+                });
+
+                [-1,1].forEach(s => {
+                    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.48, 0.07), blackMat);
+                    leg.position.set(s * 0.4, -0.2, -0.08);
+                    leg.rotation.z = s * 0.12;
+                    group.add(leg);
+                });
+            } else if (type === 'fpv') {
+                const body = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), orange);
+                body.scale.set(1.0, 0.7, 1.45);
+                group.add(body);
+                const canopy = new THREE.Mesh(new THREE.SphereGeometry(0.25, 24, 16), glassMat);
+                canopy.scale.set(0.92, 0.58, 0.8);
+                canopy.position.z = 0.18;
+                group.add(canopy);
+                [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz]) => {
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.05, 0.52), blackMat);
+                    arm.position.set(sx * 0.31, 0, sz * 0.26);
+                    arm.rotation.y = sx * sz * 0.5;
+                    group.add(arm);
+                    motorAt(sx * 0.5, sz * 0.43);
+                });
+            } else if (type === 'phantom') {
+                const body = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16), lightBody);
+                body.scale.set(1.25, 0.5, 1.25);
+                group.add(body);
+                const top = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.34, 0.2, 32), lightBody);
+                top.position.y = 0.15;
+                group.add(top);
+                const cam = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 14), glassMat);
+                cam.position.set(0, -0.23, 0.37);
+                group.add(cam);
+                [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz]) => {
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.05, 0.58), lightBody);
+                    arm.position.set(sx * 0.35, 0.02, sz * 0.31);
+                    arm.rotation.y = sx * sz * 0.38;
+                    group.add(arm);
+                    motorAt(sx * 0.57, sz * 0.48);
+                });
+                [-1,1].forEach(s => {
+                    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.32, 0.42), lightBody);
+                    leg.position.set(s * 0.28, -0.19, 0);
+                    group.add(leg);
+                });
+            }
+
+            const badge = createDJIBadge();
+            badge.position.set(0, 0.16, -0.22);
+            group.add(badge);
+
+            group.userData = { rotors, hoverOffset: Math.random() * Math.PI };
+            return group;
+        }
+
+        // Web Audio Procedural Drone Engine Sound
+        function initAudioEngine() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+                const master = audioCtx.createGain();
+                master.gain.value = 0.08;
+                master.connect(audioCtx.destination);
+
+                // Layered low rotor ambience instead of a single harsh saw wave.
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const osc3 = audioCtx.createOscillator();
+                const g1 = audioCtx.createGain();
+                const g2 = audioCtx.createGain();
+                const g3 = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc1.type = 'sine'; osc1.frequency.value = 72;
+                osc2.type = 'triangle'; osc2.frequency.value = 108;
+                osc3.type = 'sine'; osc3.frequency.value = 144;
+
+                g1.gain.value = 0.12;
+                g2.gain.value = 0.045;
+                g3.gain.value = 0.018;
+
+                filter.type = 'lowpass';
+                filter.frequency.value = 420;
+                filter.Q.value = 0.65;
+
+                osc1.connect(g1); osc2.connect(g2); osc3.connect(g3);
+                g1.connect(filter); g2.connect(filter); g3.connect(filter);
+                filter.connect(master);
+
+                osc1.start(); osc2.start(); osc3.start();
+
+                droneHumGain = master;
+                droneHumOsc = osc1;
+
+                // Very quiet air-conditioning / room-bed noise.
+                const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.018;
+                const noise = audioCtx.createBufferSource();
+                const noiseGain = audioCtx.createGain();
+                const noiseFilter = audioCtx.createBiquadFilter();
+                noise.buffer = buffer; noise.loop = true;
+                noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 900;
+                noiseGain.gain.value = 0.16;
+                noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(master);
+                noise.start();
+            } catch (e) {
+                console.log('Web Audio ambience unavailable', e);
+            }
+        }
+
+        function setupControls() {
+            window.addEventListener('keydown', (e) => keys[e.code] = true);
+            window.addEventListener('keyup', (e) => keys[e.code] = false);
+
+            let isMouseDragging = false, lastMouseX = 0, lastMouseY = 0;
+
+            window.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'CANVAS') {
+                    isMouseDragging = true;
+                    lastMouseX = e.clientX; lastMouseY = e.clientY;
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isMouseDragging) return;
+                const deltaX = e.clientX - lastMouseX;
+                const deltaY = e.clientY - lastMouseY;
+                player.rotY -= deltaX * 0.003;
+                player.pitch = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.pitch - deltaY * 0.003));
+                lastMouseX = e.clientX; lastMouseY = e.clientY;
+            });
+
+            window.addEventListener('mouseup', () => isMouseDragging = false);
+
+            // Touch Look
+            window.addEventListener('touchstart', (e) => {
+                if (e.target.tagName === 'CANVAS') {
+                    const touch = e.touches[0];
+                    isTouchLooking = true;
+                    lastTouchX = touch.clientX; lastTouchY = touch.clientY;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isTouchLooking) return;
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - lastTouchX;
+                const deltaY = touch.clientY - lastTouchY;
+                player.rotY -= deltaX * 0.005;
+                player.pitch = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.pitch - deltaY * 0.005));
+                lastTouchX = touch.clientX; lastTouchY = touch.clientY;
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => isTouchLooking = false);
+
+            setupJoystick();
+
+            // Click Drone Raycaster
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            window.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'CANVAS') return;
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(scene.children, true);
+
+                for (let i = 0; i < intersects.length; i++) {
+                    let obj = intersects[i].object;
+                    while (obj.parent && obj.parent !== scene) obj = obj.parent;
+                    const found = droneObjects.find(d => d.mesh === obj);
+                    if (found) { openInspectModal(found.index); break; }
+                }
+            });
+        }
+
+        function setupJoystick() {
+            const container = document.getElementById('joystick-container');
+            const knob = document.getElementById('joystick-knob');
+            let active = false;
+
+            container.addEventListener('touchstart', () => active = true, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!active) return;
+                const touch = e.touches[0];
+                const rect = container.getBoundingClientRect();
+                const dx = touch.clientX - (rect.left + rect.width / 2);
+                const dy = touch.clientY - (rect.top + rect.height / 2);
+                const dist = Math.hypot(dx, dy);
+                const maxDist = 30;
+
+                const clampedX = (dist > maxDist) ? (dx / dist) * maxDist : dx;
+                const clampedY = (dist > maxDist) ? (dy / dist) * maxDist : dy;
+
+                knob.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+                touchMoveVector = { x: clampedX / maxDist, y: clampedY / maxDist };
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => {
+                active = false;
+                knob.style.transform = `translate(0px, 0px)`;
+                touchMoveVector = { x: 0, y: 0 };
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotors Spin & Hovering
+            const time = Date.now() * 0.003;
+            droneObjects.forEach(item => {
+                if (item.mesh.userData.rotors) {
+                    item.mesh.userData.rotors.forEach(r => r.rotation.y += 0.45);
+                }
+                item.mesh.position.y = item.data.pos.y + Math.sin(time + item.mesh.userData.hoverOffset) * 0.025;
+            });
+
+            // Player Movement
+            const speed = 0.08;
+            let moveX = 0, moveZ = 0;
+
+            if (keys['KeyW'] || keys['ArrowUp']) moveZ -= 1;
+            if (keys['KeyS'] || keys['ArrowDown']) moveZ += 1;
+            if (keys['KeyA'] || keys['ArrowLeft']) moveX -= 1;
+            if (keys['KeyD'] || keys['ArrowRight']) moveX += 1;
+
+            moveX += touchMoveVector.x;
+            moveZ += touchMoveVector.y;
+
+            if (moveX !== 0 || moveZ !== 0) {
+                const sin = Math.sin(player.rotY);
+                const cos = Math.cos(player.rotY);
+                const nextX = player.x + (moveX * cos + moveZ * sin) * speed;
+                const nextZ = player.z + (-moveX * sin + moveZ * cos) * speed;
+
+                if (!checkCollision(nextX, nextZ)) {
+                    player.x = nextX; player.z = nextZ;
+                }
+            }
+
+            camera.position.set(player.x, player.y, player.z);
+            camera.rotation.y = player.rotY;
+            camera.rotation.x = player.pitch;
+
+            checkProximity();
+            renderer.render(scene, camera);
+        }
+
+        function checkCollision(newX, newZ) {
+            const playerBox = new THREE.Box3(
+                new THREE.Vector3(newX - 0.45, 0, newZ - 0.45),
+                new THREE.Vector3(newX + 0.45, 2, newZ + 0.45)
+            );
+            return colliders.some(c => c.intersectsBox(playerBox));
+        }
+
+        function checkProximity() {
+            let closestDist = Infinity, closestIndex = -1;
+
+            droneObjects.forEach((item, index) => {
+                const dist = Math.hypot(player.x - item.data.pos.x, player.z - item.data.pos.z);
+                if (dist < closestDist) { closestDist = dist; closestIndex = index; }
+            });
+
+            const tag = document.getElementById('proximity-tag');
+
+            if (closestDist < 3.2 && closestIndex !== -1) {
+                activeProximityIndex = closestIndex;
+                const drone = DRONE_DATA[closestIndex];
+
+                const dronePos = new THREE.Vector3(drone.pos.x, drone.pos.y + 0.4, drone.pos.z);
+                dronePos.project(camera);
+
+                const x = (dronePos.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-(dronePos.y * 0.5) + 0.5) * window.innerHeight;
+
+                tag.style.display = 'block';
+                tag.style.left = `${x}px`;
+                tag.style.top = `${y}px`;
+                document.getElementById('prox-title').innerText = drone.name;
+                document.getElementById('prox-subtitle').innerText = `${drone.price} • Tap to Inspect`;
+            } else {
+                activeProximityIndex = -1;
+                tag.style.display = 'none';
+            }
+        }
+
+        function toggleJumpPanel() { document.getElementById('jump-panel').classList.toggle('active'); }
+
+        function teleportToDrone(index) {
+            const target = DRONE_DATA[index];
+            player.x = target.pos.x;
+            player.z = target.pos.z + 1.8;
+            player.rotY = 0; player.pitch = 0;
+            document.getElementById('jump-panel').classList.remove('active');
+        }
+
+        function inspectCurrentProximityDrone() {
+            if (activeProximityIndex !== -1) openInspectModal(activeProximityIndex);
+        }
+
+        function openInspectModal(index) {
+            const drone = DRONE_DATA[index];
+            document.getElementById('m-title').innerText = drone.name;
+            document.getElementById('m-price').innerText = drone.price;
+            document.getElementById('m-desc').innerText = drone.desc;
+            document.getElementById('m-cam').innerText = drone.cam;
+            document.getElementById('m-time').innerText = drone.time;
+            document.getElementById('m-range').innerText = drone.range;
+            document.getElementById('m-rec').innerText = drone.rec;
+
+            document.getElementById('book-drone-select').value = drone.name;
+            document.getElementById('inspect-modal').classList.add('active');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openBookingModal() { document.getElementById('booking-modal').classList.add('active'); }
+        function proceedToBookingFromInspect() { closeModal('inspect-modal'); openBookingModal(); }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('book-name').value;
+            const phone = document.getElementById('book-phone').value;
+            const drone = document.getElementById('book-drone-select').value;
+            const location = document.getElementById('book-location').value;
+
+            const text = `*NEW YAADIVO DRONE BOOKING*%0A%0A` +
+                         `*Name:* ${name}%0A` +
+                         `*Phone:* ${phone}%0A` +
+                         `*Selected Drone:* ${drone}%0A` +
+                         `*Date & Venue:* ${location}%0A%0A` +
+                         `_Sent from Yaadivo 3D Showroom_`;
+
+            window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+            closeModal('booking-modal');
+        }
+
+        function enterShowroom() {
+            if (!renderer) {
+                const overlay = document.getElementById('welcome-overlay');
+                const p = overlay.querySelector('p');
+                if (p) p.innerHTML = '<strong>Showroom is loading...</strong><br>Please wait a moment and click ENTER again.';
+                try { init3D(); } catch (e) { console.error(e); }
+                if (!renderer) return;
+            }
+            document.getElementById('welcome-overlay').style.display = 'none';
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => console.log('Audio autoplay blocked'));
+            initAudioEngine();
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('bg-audio');
+            isAudioMuted = !isAudioMuted;
+            if (isAudioMuted) {
+                audio.pause();
+                if (droneHumGain) droneHumGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                document.getElementById('audio-btn').innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+            } else {
+                audio.play();
+                if (droneHumGain) droneHumGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                document.getElementById('audio-btn').innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('error', (event) => {
+            console.error(event.error || event.message);
+            const status = document.getElementById('loading-status');
+            if (status) { status.textContent = 'Showroom engine error — open browser console for details.'; status.style.display='block'; }
+        });
+        window.onload = () => {
+            try { init3D(); }
+            catch (e) {
+                console.error('Yaadivo 3D initialization failed:', e);
+                const status = document.getElementById('loading-status');
+                if (status) { status.textContent = '3D engine failed to initialize. Please refresh.'; status.style.display='block'; }
+            }
+        };
+    </script>
+</body>
+</html>
